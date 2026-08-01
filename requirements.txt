@@ -1,0 +1,19 @@
+# Runtime dependencies. Exact pins for reproducible builds live in
+# requirements.lock (used by the Dockerfile); these ranges are for local installs.
+# The pipeline runs fully OFFLINE in deterministic mode with just these.
+pandas>=2.0
+numpy>=1.26
+scikit-learn>=1.4
+faiss-cpu>=1.8
+pydantic>=2.6
+fastapi>=0.110
+uvicorn>=0.29
+requests>=2.31
+
+# Optional — enable the LLM paths (set LLM_PROVIDER=ollama|openai|anthropic):
+#   Ollama needs no extra package (uses `requests`); for hosted APIs install:
+# openai>=1.30
+# anthropic>=0.30
+
+# Optional — production-grade embeddings for RAG (set EMBEDDINGS=minilm):
+# sentence-transformers>=2.7

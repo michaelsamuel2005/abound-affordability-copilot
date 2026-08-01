@@ -1,0 +1,58 @@
+# CI: deterministic offline tests — no API keys, no network calls to model
+# providers, fixed seeds. LLM behaviour is exercised through scripted fakes, so
+# the pipeline is stable regardless of any external model or provider change.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install dependencies (exact pins from the lockfile)
+        run: pip install -r requirements.lock -r requirements-dev.txt
+      - name: Lint (ruff)
+        run: |
+          ruff check .
+          ruff format --check .
+      - name: Unit + integration tests (offline, deterministic)
+        run: pytest --cov --cov-fail-under=85
+      - name: End-to-end evaluation smoke run (offline)
+        run: python run_all.py
+      - name: Upload evaluation report
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: |
+            reports/eval_summary.json
+            reports/report.html
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t affordability-copilot .
+      - name: Boot container and probe /health and /ready
+        run: |
+          docker run -d --rm -p 8000:8000 --name copilot affordability-copilot
+          for i in $(seq 1 30); do
+            curl -fsS http://localhost:8000/health && break || sleep 1
+          done
+          curl -fsS http://localhost:8000/ready
+          curl -fsS http://localhost:8000/version
+          docker stop copilot

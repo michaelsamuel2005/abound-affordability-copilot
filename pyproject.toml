@@ -1,0 +1,37 @@
+[project]
+name = "abound-affordability-copilot"
+version = "2.0.0"
+description = "Human-in-the-loop RAG copilot for cashflow-underwriting recommendations on synthetic Open-Banking data"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["src", "app"]
+
+[tool.coverage.report]
+precision = 1
+show_missing = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["reports", "index"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = ["B008", "UP042"]  # B008: FastAPI defaults; UP042: keep str+Enum for explicit JSON values
+
+[tool.ruff.lint.per-file-ignores]
+# long lines inside CSS/HTML/prompt string literals only
+"run_all.py" = ["E501"]
+"src/prompts.py" = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["schemas", "config", "prompts", "llm", "categorize",
+                     "affordability", "decision_rules", "agent", "retriever",
+                     "obs", "evaluate", "dataio"]

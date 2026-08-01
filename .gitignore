@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# generated at runtime (rebuilt from the policy corpus on startup)
+index/
+
+# OS
+.DS_Store
+.ruff_cache/

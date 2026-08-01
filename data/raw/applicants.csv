@@ -1,0 +1,22 @@
+applicant_id,name,profile,months,requested_amount,term_months,expected_outcome,expected_warnings,expected_policy_ids,n_accounts
+APP-001,Sofia Webb,healthy_high,6,8000,36,approve,,POL-002,1
+APP-002,Noah Silva,healthy_mid,6,5000,24,approve,,POL-002,1
+APP-003,Liam Khan,marginal,6,8000,24,refer,buffer_breach_reduced_offer,POL-002|POL-009,1
+APP-004,Marcus Novak,over_indebted,6,7000,24,decline,,POL-003,1
+APP-005,Nadia Iqbal,gambling,6,6000,36,refer,gambling_high,POL-005,1
+APP-006,Pedro Silva,irregular_income,6,6000,36,refer,income_volatility_high,POL-004,1
+APP-007,Arjun Osei,distress,6,4000,24,refer,distress_events,POL-006,1
+APP-008,Sofia Duarte,thin_file,1,5000,24,refer,insufficient_history|low_transaction_count,POL-007,1
+APP-009,Tomasz Doyle,low_income_high_ask,6,15000,24,decline,,POL-003,1
+APP-010,Isabel Grant,healthy_saver,6,10000,48,approve,,POL-002,1
+APP-011,Dev Kaur,clean_small,6,3000,18,approve,,POL-002,1
+APP-012,Oliver Kowalski,borderline_dti,6,5000,24,refer,dti_borderline,POL-003,1
+APP-013,Sofia Kaur,benefits_reliant,6,2000,24,refer,vulnerability_indicators,POL-008,1
+APP-014,Isabel Grant,multi_account_transfers,6,6000,36,approve,internal_transfers_netted,POL-002|DQ-002,2
+APP-015,Dev Walsh,refund_heavy,6,5000,24,approve,refunds_netted,POL-002|DQ-003,1
+APP-016,Freya Fischer,duplicate_glitch,6,5000,24,approve,duplicates_removed,POL-002|DQ-004,1
+APP-017,Zara Okafor,cash_heavy,6,4000,24,refer,high_cash_usage,DQ-005,1
+APP-018,Sam Nair,no_income,6,3000,24,refer,no_recognisable_income,DQ-006,1
+APP-019,Isabel Patel,injection_descriptions,6,6000,36,approve,,POL-002,1
+APP-020,Tomasz Kowalski,missing_month,6,5000,24,refer,coverage_gap,DQ-006,1
+APP-021,Nadia Rossi,high_unknown,6,4000,24,refer,high_unknown_share,DQ-001,1

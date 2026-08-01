@@ -1,0 +1,288 @@
+{
+  "dataset": {
+    "n_applicants": 32,
+    "class_counts": {
+      "approve": 11,
+      "refer": 15,
+      "decline": 6
+    },
+    "n_transactions": 4567
+  },
+  "decision": {
+    "accuracy": 1.0,
+    "correct": 32,
+    "n": 32,
+    "confusion": {
+      "approve->approve": 11,
+      "refer->refer": 15,
+      "decline->decline": 6
+    },
+    "per_class": {
+      "approve": {
+        "support": 11,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "refer": {
+        "support": 15,
+        "recall": 1.0,
+        "precision": 1.0
+      },
+      "decline": {
+        "support": 6,
+        "recall": 1.0,
+        "precision": 1.0
+      }
+    },
+    "false_positive_referral_rate": 0.0
+  },
+  "guardrails": {
+    "recall": 1.0,
+    "true_positives": 17,
+    "expected_positives": 17,
+    "per_code": {
+      "buffer_breach_reduced_offer": {
+        "expected": 2,
+        "raised": 2
+      },
+      "coverage_gap": {
+        "expected": 1,
+        "raised": 1
+      },
+      "distress_events": {
+        "expected": 1,
+        "raised": 1
+      },
+      "dti_borderline": {
+        "expected": 1,
+        "raised": 1
+      },
+      "gambling_high": {
+        "expected": 2,
+        "raised": 2
+      },
+      "high_cash_usage": {
+        "expected": 1,
+        "raised": 1
+      },
+      "high_unknown_share": {
+        "expected": 1,
+        "raised": 1
+      },
+      "income_volatility_high": {
+        "expected": 2,
+        "raised": 2
+      },
+      "insufficient_history": {
+        "expected": 2,
+        "raised": 2
+      },
+      "low_transaction_count": {
+        "expected": 2,
+        "raised": 2
+      },
+      "no_recognisable_income": {
+        "expected": 1,
+        "raised": 1
+      },
+      "vulnerability_indicators": {
+        "expected": 1,
+        "raised": 1
+      }
+    },
+    "treatment_checks": {
+      "expected": 3,
+      "raised": 3
+    }
+  },
+  "retrieval": {
+    "hit_rate_at_k": 1.0,
+    "k": 4,
+    "hits": 37,
+    "expected_ids_total": 37,
+    "case_all_found_rate": 1.0,
+    "top1_relevant_rate": 0.531,
+    "runtime_decisive_hit_rate": 1.0,
+    "runtime_decisive_hits": 40,
+    "runtime_decisive_total": 40,
+    "runtime_case_all_found_rate": 1.0,
+    "embedder": "tfidf"
+  },
+  "faithfulness": {
+    "rate": 1.0,
+    "passed": 32,
+    "n": 32,
+    "checker": "deterministic (verbatim quotes + cited-id subset + number grounding + citation presence)",
+    "violations": [],
+    "llm_judge": null
+  },
+  "categorization": {
+    "accuracy": 0.959,
+    "n_labelled": 4567,
+    "unknown_rate": 0.043,
+    "per_category": {
+      "benefits": {
+        "support": 6,
+        "recall": 1.0
+      },
+      "bnpl": {
+        "support": 24,
+        "recall": 1.0
+      },
+      "cash_withdrawal": {
+        "support": 36,
+        "recall": 1.0
+      },
+      "council_tax": {
+        "support": 181,
+        "recall": 1.0
+      },
+      "dining": {
+        "support": 790,
+        "recall": 0.939
+      },
+      "entertainment": {
+        "support": 174,
+        "recall": 1.0
+      },
+      "fees": {
+        "support": 3,
+        "recall": 1.0
+      },
+      "gambling": {
+        "support": 55,
+        "recall": 1.0
+      },
+      "groceries": {
+        "support": 720,
+        "recall": 0.928
+      },
+      "income": {
+        "support": 212,
+        "recall": 1.0
+      },
+      "insurance": {
+        "support": 180,
+        "recall": 1.0
+      },
+      "internal_transfer": {
+        "support": 14,
+        "recall": 1.0
+      },
+      "loan_repayment": {
+        "support": 108,
+        "recall": 1.0
+      },
+      "refund": {
+        "support": 13,
+        "recall": 1.0
+      },
+      "rent_mortgage": {
+        "support": 180,
+        "recall": 1.0
+      },
+      "savings": {
+        "support": 42,
+        "recall": 1.0
+      },
+      "shopping": {
+        "support": 480,
+        "recall": 0.883
+      },
+      "subscriptions": {
+        "support": 453,
+        "recall": 1.0
+      },
+      "transport": {
+        "support": 530,
+        "recall": 0.938
+      },
+      "unknown": {
+        "support": 6,
+        "recall": 1.0
+      },
+      "utilities": {
+        "support": 360,
+        "recall": 1.0
+      }
+    },
+    "top_confusions": [
+      {
+        "true": "shopping",
+        "predicted": "unknown",
+        "count": 56
+      },
+      {
+        "true": "groceries",
+        "predicted": "unknown",
+        "count": 52
+      },
+      {
+        "true": "dining",
+        "predicted": "unknown",
+        "count": 48
+      },
+      {
+        "true": "transport",
+        "predicted": "unknown",
+        "count": 33
+      }
+    ],
+    "critical_income_inflation_errors": 0,
+    "critical_examples": []
+  },
+  "structured_output": {
+    "mode": "rules",
+    "batches": 0,
+    "llm_calls": 0,
+    "parse_failures": 0,
+    "repairs": 0,
+    "repaired_items": 0,
+    "fallback_items": 0,
+    "invented_ids": 0,
+    "llm_unavailable": 0,
+    "batch_first_pass_valid_rate": null,
+    "item_fallback_rate": 0.0
+  },
+  "latency_ms": {
+    "affordability_ms": {
+      "mean": 0.32,
+      "p50": 0.32,
+      "p95": 0.37
+    },
+    "categorize_ms": {
+      "mean": 0.96,
+      "p50": 1.02,
+      "p95": 1.13
+    },
+    "decide_ms": {
+      "mean": 0.01,
+      "p50": 0.01,
+      "p95": 0.01
+    },
+    "end_to_end": {
+      "mean": 1.71,
+      "p50": 1.76,
+      "p95": 2.03
+    },
+    "retrieve_ms": {
+      "mean": 0.21,
+      "p50": 0.2,
+      "p95": 0.23
+    },
+    "validate_input_ms": {
+      "mean": 0.2,
+      "p50": 0.21,
+      "p95": 0.23
+    }
+  },
+  "calibration": {
+    "mean_confidence_correct": 0.755,
+    "mean_confidence_incorrect": null
+  },
+  "versions": {
+    "prompt": "v3",
+    "llm": "deterministic",
+    "embedder": "tfidf"
+  }
+}

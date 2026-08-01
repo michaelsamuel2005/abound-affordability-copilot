@@ -1,0 +1,40 @@
+# Docker build + boot evidence (revision 3, authoring sandbox, 2026-07-31)
+#
+# CAVEAT: built with --build-arg BASE_IMAGE=local/python-slim-equiv:3.12 (a locally
+# imported Ubuntu-noble + Python 3.12 base) because all container registries
+# returned 403 Forbidden in the authoring sandbox. The canonical python:3.12-slim
+# build is performed by CI (.github/workflows/ci.yml) and remains UNVERIFIED until
+# that runs or you execute `make docker-build && make docker-run` locally.
+# Measured size with this substitute base: 994MB (a slim base will be smaller).
+#
+# ---- docker build tail (raw) ----
+#1 DONE 0.0s
+#2 DONE 0.0s
+#3 DONE 0.0s
+#4 DONE 0.0s
+#5 DONE 0.0s
+#9 DONE 0.2s
+#10 DONE 0.1s
+#11 DONE 0.1s
+#12 DONE 0.1s
+#13 DONE 14.7s
+#14 DONE 0.6s
+#15 naming to docker.io/library/affordability-copilot:latest done
+#15 DONE 0.8s
+
+# ---- boot + probe transcript (raw) ----
+=== raw probe transcript (revision-3 image, 2026-07-31T01:12:49Z) ===
+$ curl -sS http://localhost:8002/health
+{"status":"ok"}
+HTTP 200
+
+$ curl -sS http://localhost:8002/ready
+{"status":"ready","embeddings":"tfidf","chunks":17,"llm":"deterministic"}
+HTTP 200
+
+$ curl -sS -X POST http://localhost:8002/v1/decision -d {1-txn thin file}
+{"assessment_id":"ASMT-00001-0cb877","applicant_id":"DOCKER-3","decision":{"applicant_id":"DOCKER-3","outcome":"refer","confidence":0.5,"requested_amount":3000.0,"term_months":24,"monthly_repayment":159.96,"max_affordable_amount":53449.5,"disposable_after_repayment":2840.04,"dti_including_new":0.053,"reasons":["Automated affordability assessment is not reliable for this application; referred for manual review: Only 1 month(s) of history; minimum is 3.; Only 1 transactions; minimum is 40.; Eligible income recognised in 1 month(s); minimum is 2."],"rationale":"Automated affordability assessment is not reliable for this application; referred for manual review: Only 1 month(s) of history; minimum is 3.; Only 1 transactions; minimum is 40.; Eligible income recognised in 1 month(s); minimum is 2. Policy basis: [POL-007] [DQ-006].","warnings":[{"code":"insufficient_history","severity":"guardrai
+$ docker inspect --format "healthcheck: {{.State.Health.Status}}" copilot3b
+healthcheck: healthy
+$ docker images affordability-copilot --format "size: {{.Size}}"
+size: 994MB
