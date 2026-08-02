@@ -4,12 +4,12 @@ origin	https://github.com/michaelsamuel2005/abound-affordability-copilot.git (pu
 repository URL   : https://github.com/michaelsamuel2005/abound-affordability-copilot
 
 === HEAD (the tree in this archive) ===
-commit SHA       : ca7699b8339d6548c2079ca0d7512d837ffcb178
-short SHA        : ca7699b
+commit SHA       : 442e4c04efc19265b6689b1e74a22c5dc69019df
+short SHA        : 442e4c0
 branch           : main
 author           : Michael Samuel <ce25478@bristol.ac.uk>
-committed         : 2026-08-02T12:23:34+01:00
-subject          : Add auditor evidence pack and index
+committed         : 2026-08-02T12:29:10+01:00
+subject          : Evidence index and git/CI refresh script
 
 === working tree at collection time ===
    M reports/evidence/git_and_ci.txt
@@ -20,6 +20,7 @@ subject          : Add auditor evidence pack and index
   committed at the SHA shown.
 
 === commit history ===
+442e4c0 Evidence index and git/CI refresh script
 ca7699b Add auditor evidence pack and index
 f9ad82d Add auditor evidence pack and index
 9c029d3 Add auditor evidence pack
@@ -30,6 +31,7 @@ e14830f Affordability Copilot: human-in-the-loop RAG for cashflow underwriting
 
 === GitHub Actions ===
 --- all runs ---
+2026-08-02T11:29:20Z  ci  success  sha=442e4c04efc19265b6689b1e74a22c5dc69019df  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30745841337
 2026-08-02T11:23:44Z  ci  success  sha=ca7699b8339d6548c2079ca0d7512d837ffcb178  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30745653835
 2026-08-02T11:19:59Z  ci  success  sha=f9ad82d103c0566f45ceb2434deba8a08ce468e2  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30745528133
 2026-08-02T11:10:47Z  ci  success  sha=9c029d34cb9724da1a00e1a1080078373ef1c057  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30745219806
@@ -38,9 +40,9 @@ e14830f Affordability Copilot: human-in-the-loop RAG for cashflow underwriting
 2026-08-02T00:48:00Z  ci  success  sha=096519cd47d316fb9084b3f5ecce2a239404a436  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30725872828
 2026-08-01T13:23:45Z  ci  success  sha=e14830fb27f3e76efb9c68fb73927b8969fc21b4  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30701636238
 
---- run for HEAD (ca7699b) ---
-run id=30745653835  status=completed  conclusion=success
-https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30745653835
+--- run for HEAD (442e4c0) ---
+run id=30745841337  status=completed  conclusion=success
+https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30745841337
 
 --- jobs in that run ---
   test (3.12): success
