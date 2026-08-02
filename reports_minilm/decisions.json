@@ -22,7 +22,7 @@
         "title": "Minimum disposable-income buffer",
         "version": "2026-07.2",
         "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.4544
+        "score": 0.7679
       }
     ],
     "human_review_required": true,
@@ -32,7 +32,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "healthy_high",
     "metrics": {
@@ -216,17 +216,17 @@
       }
     },
     "retrieved_ids": [
-      "POL-001",
       "POL-002",
+      "POL-003",
       "POL-004",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.92,
-      "categorize_ms": 1.36,
-      "affordability_ms": 0.8,
-      "retrieve_ms": 4.15,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.35,
+      "categorize_ms": 2.62,
+      "affordability_ms": 1.39,
+      "retrieve_ms": 985.3,
+      "decide_ms": 0.3
     }
   },
   {
@@ -252,7 +252,7 @@
         "title": "Minimum disposable-income buffer",
         "version": "2026-07.2",
         "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.4544
+        "score": 0.7679
       }
     ],
     "human_review_required": true,
@@ -262,7 +262,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "healthy_mid",
     "metrics": {
@@ -455,17 +455,17 @@
       }
     },
     "retrieved_ids": [
-      "POL-001",
       "POL-002",
+      "POL-003",
       "POL-004",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.23,
-      "categorize_ms": 1.04,
-      "affordability_ms": 0.36,
-      "retrieve_ms": 0.26,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.33,
+      "categorize_ms": 1.2,
+      "affordability_ms": 0.48,
+      "retrieve_ms": 10.98,
+      "decide_ms": 0.02
     }
   },
   {
@@ -497,7 +497,7 @@
         "title": "Minimum disposable-income buffer",
         "version": "2026-07.2",
         "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.5374
+        "score": 0.82
       },
       {
         "policy_id": "POL-009",
@@ -505,7 +505,7 @@
         "title": "Maximum affordable amount",
         "version": "2026-07.2",
         "quote": "The maximum loan is the largest amount whose monthly repayment still leaves the customer at or above the \u00a3150 disposable-income buffer (POL-002). Never lend above this figure even where a larger amount is requested. Where the requested amount fails the buffer test but at least \u00a3500 and at least half of the request is affordable, the case may be referred with a reduced-amount pr",
-        "score": 0.399
+        "score": 0.6671
       }
     ],
     "human_review_required": true,
@@ -515,7 +515,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "marginal",
     "metrics": {
@@ -709,17 +709,17 @@
       }
     },
     "retrieved_ids": [
-      "DQ-001",
-      "POL-001",
       "POL-002",
+      "POL-003",
+      "POL-004",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.22,
-      "categorize_ms": 1.01,
-      "affordability_ms": 0.33,
-      "retrieve_ms": 0.22,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.25,
+      "categorize_ms": 1.2,
+      "affordability_ms": 0.38,
+      "retrieve_ms": 62.52,
+      "decide_ms": 0.06
     }
   },
   {
@@ -751,7 +751,7 @@
         "title": "Debt-to-income (DTI) limit",
         "version": "2026-07.2",
         "quote": "Total monthly debt repayments **including the proposed new loan** must not exceed **45% of assessed monthly income**. A DTI between 40% and 45% must be **referred** for manual review; a DTI above 45% must be **declined**.",
-        "score": 0.2928
+        "score": 0.5864
       }
     ],
     "human_review_required": true,
@@ -761,7 +761,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "over_indebted",
     "metrics": {
@@ -969,11 +969,11 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.23,
-      "categorize_ms": 1.08,
-      "affordability_ms": 0.35,
-      "retrieve_ms": 0.27,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.26,
+      "categorize_ms": 1.49,
+      "affordability_ms": 0.41,
+      "retrieve_ms": 65.45,
+      "decide_ms": 0.03
     }
   },
   {
@@ -1005,7 +1005,7 @@
         "title": "Gambling and potentially harmful spend",
         "version": "2026-07.2",
         "quote": "Where gambling transactions exceed **10% of assessed monthly income**, the application must be **referred** for manual review. Sustained, high-proportion gambling is an indicator of potential harm and may justify a **decline**; the review must consider affordability and customer-harm obligations together.",
-        "score": 0.2606
+        "score": 0.6841
       }
     ],
     "human_review_required": true,
@@ -1015,7 +1015,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "gambling",
     "metrics": {
@@ -1242,17 +1242,17 @@
       }
     },
     "retrieved_ids": [
-      "POL-001",
       "POL-002",
+      "POL-004",
       "POL-005",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.26,
-      "categorize_ms": 1.22,
-      "affordability_ms": 0.41,
-      "retrieve_ms": 0.24,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.3,
+      "categorize_ms": 1.36,
+      "affordability_ms": 0.47,
+      "retrieve_ms": 16.45,
+      "decide_ms": 0.02
     }
   },
   {
@@ -1284,7 +1284,7 @@
         "title": "Income verification and stability",
         "version": "2026-07.2",
         "quote": "Income must be evidenced by inflows recognisable as employment, self-employment or benefits income across the observed period. Where income is volatile (coefficient of variation above **0.35**), affordability must be assessed against a **conservative, lower income estimate** \u2014 no higher than the worse of the weakest observed month and the mean reduced in proportion to the volat",
-        "score": 0.2192
+        "score": 0.6602
       }
     ],
     "human_review_required": true,
@@ -1294,7 +1294,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "irregular_income",
     "metrics": {
@@ -1508,17 +1508,17 @@
       }
     },
     "retrieved_ids": [
-      "DQ-001",
       "POL-002",
       "POL-004",
+      "POL-008",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.25,
-      "categorize_ms": 1.13,
-      "affordability_ms": 0.37,
-      "retrieve_ms": 0.21,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.27,
+      "categorize_ms": 1.38,
+      "affordability_ms": 0.47,
+      "retrieve_ms": 59.1,
+      "decide_ms": 0.03
     }
   },
   {
@@ -1550,7 +1550,7 @@
         "title": "Signs of financial distress",
         "version": "2026-07.2",
         "quote": "Overdraft fees, returned direct debits, unpaid-item fees and payday-loan activity are indicators of financial distress. **Two or more** distress events in the observed period require a **referral** for manual review.",
-        "score": 0.3819
+        "score": 0.5918
       }
     ],
     "human_review_required": true,
@@ -1560,7 +1560,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "distress",
     "metrics": {
@@ -1773,17 +1773,17 @@
       }
     },
     "retrieved_ids": [
-      "DQ-001",
       "POL-002",
+      "POL-003",
       "POL-006",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.24,
-      "categorize_ms": 1.08,
-      "affordability_ms": 0.36,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.29,
+      "categorize_ms": 1.3,
+      "affordability_ms": 0.43,
+      "retrieve_ms": 19.45,
+      "decide_ms": 0.03
     }
   },
   {
@@ -1825,7 +1825,7 @@
         "title": "Insufficient data (guardrail)",
         "version": "2026-07.2",
         "quote": "Where fewer than **three months** of transaction history or fewer than **40** transactions are available, affordability cannot be reliably assessed. Such cases must be **referred** \u2014 never auto-declined solely for a thin file \u2014 and must carry an explicit insufficient-data warning so the reviewer knows why no automated recommendation was possible.",
-        "score": 0.1528
+        "score": null
       },
       {
         "policy_id": "DQ-006",
@@ -1833,7 +1833,7 @@
         "title": "Income recognition and coverage",
         "version": "2026-07.2",
         "quote": "Eligible income means inflows recognisable as employment, self-employment or benefits income. Unrecognised inflows are not income (DQ-001, DQ-003 apply). Eligible income must be observed in at least **two** distinct months. The observation window must be **contiguous**: a missing month indicates incomplete account coverage. Where no eligible income is recognised, or the window ",
-        "score": 0.2619
+        "score": 0.5063
       }
     ],
     "human_review_required": true,
@@ -1843,7 +1843,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "thin_file",
     "metrics": {
@@ -1898,15 +1898,15 @@
     "retrieved_ids": [
       "DQ-006",
       "POL-002",
-      "POL-007",
+      "POL-004",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.02,
-      "categorize_ms": 0.1,
-      "affordability_ms": 0.05,
-      "retrieve_ms": 0.22,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.03,
+      "categorize_ms": 0.13,
+      "affordability_ms": 0.08,
+      "retrieve_ms": 19.83,
+      "decide_ms": 0.04
     }
   },
   {
@@ -1938,7 +1938,7 @@
         "title": "Debt-to-income (DTI) limit",
         "version": "2026-07.2",
         "quote": "Total monthly debt repayments **including the proposed new loan** must not exceed **45% of assessed monthly income**. A DTI between 40% and 45% must be **referred** for manual review; a DTI above 45% must be **declined**.",
-        "score": 0.2456
+        "score": 0.5719
       }
     ],
     "human_review_required": true,
@@ -1948,7 +1948,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "low_income_high_ask",
     "metrics": {
@@ -2147,11 +2147,11 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.21,
-      "categorize_ms": 0.99,
-      "affordability_ms": 0.32,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.27,
+      "categorize_ms": 1.3,
+      "affordability_ms": 0.41,
+      "retrieve_ms": 22.41,
+      "decide_ms": 0.02
     }
   },
   {
@@ -2177,7 +2177,7 @@
         "title": "Minimum disposable-income buffer",
         "version": "2026-07.2",
         "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.4544
+        "score": 0.7679
       }
     ],
     "human_review_required": true,
@@ -2187,7 +2187,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "healthy_saver",
     "metrics": {
@@ -2381,17 +2381,17 @@
       }
     },
     "retrieved_ids": [
-      "POL-001",
       "POL-002",
+      "POL-003",
       "POL-004",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.21,
-      "categorize_ms": 1.05,
-      "affordability_ms": 0.32,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.27,
+      "categorize_ms": 1.34,
+      "affordability_ms": 0.43,
+      "retrieve_ms": 10.9,
+      "decide_ms": 0.02
     }
   },
   {
@@ -2417,7 +2417,7 @@
         "title": "Minimum disposable-income buffer",
         "version": "2026-07.2",
         "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.4544
+        "score": 0.7679
       }
     ],
     "human_review_required": true,
@@ -2427,7 +2427,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "clean_small",
     "metrics": {
@@ -2626,16 +2626,16 @@
       }
     },
     "retrieved_ids": [
-      "POL-001",
       "POL-002",
+      "POL-003",
       "POL-004",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.22,
-      "categorize_ms": 1.06,
-      "affordability_ms": 0.33,
-      "retrieve_ms": 0.19,
+      "validate_input_ms": 0.28,
+      "categorize_ms": 1.34,
+      "affordability_ms": 0.43,
+      "retrieve_ms": 11.9,
       "decide_ms": 0.01
     }
   },
@@ -2668,7 +2668,7 @@
         "title": "Debt-to-income (DTI) limit",
         "version": "2026-07.2",
         "quote": "Total monthly debt repayments **including the proposed new loan** must not exceed **45% of assessed monthly income**. A DTI between 40% and 45% must be **referred** for manual review; a DTI above 45% must be **declined**.",
-        "score": 0.3797
+        "score": 0.6213
       }
     ],
     "human_review_required": true,
@@ -2678,7 +2678,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "borderline_dti",
     "metrics": {
@@ -2877,11 +2877,11 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.2,
-      "categorize_ms": 0.99,
-      "affordability_ms": 0.3,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.28,
+      "categorize_ms": 1.37,
+      "affordability_ms": 0.44,
+      "retrieve_ms": 11.24,
+      "decide_ms": 0.02
     }
   },
   {
@@ -2913,7 +2913,7 @@
         "title": "Vulnerable customers",
         "version": "2026-07.2",
         "quote": "Indicators of potential vulnerability \u2014 for example, benefits making up more than half of income combined with essential spending above 60% of income \u2014 require **manual review** and consideration of forbearance and support options. Do not auto-approve where vulnerability indicators are present.",
-        "score": 0.1876
+        "score": 0.6123
       }
     ],
     "human_review_required": true,
@@ -2923,7 +2923,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "benefits_reliant",
     "metrics": {
@@ -3114,17 +3114,17 @@
       }
     },
     "retrieved_ids": [
-      "DQ-001",
       "POL-002",
+      "POL-004",
       "POL-008",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.2,
-      "categorize_ms": 0.97,
-      "affordability_ms": 0.31,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.27,
+      "categorize_ms": 1.31,
+      "affordability_ms": 0.42,
+      "retrieve_ms": 21.17,
+      "decide_ms": 0.04
     }
   },
   {
@@ -3156,7 +3156,7 @@
         "title": "Minimum disposable-income buffer",
         "version": "2026-07.2",
         "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.3146
+        "score": 0.6413
       },
       {
         "policy_id": "DQ-002",
@@ -3164,7 +3164,7 @@
         "title": "Internal transfers and savings movements",
         "version": "2026-07.2",
         "quote": "Transfers between the customer's own accounts, and movements into savings or pots, are money **moved**, not money earned or spent. Both legs must be excluded from income and from expenditure. Treating an own-account transfer as income overstates affordability and is a serious assessment defect.",
-        "score": 0.3427
+        "score": 0.6409
       }
     ],
     "human_review_required": true,
@@ -3174,7 +3174,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "multi_account_transfers",
     "metrics": {
@@ -3387,11 +3387,11 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.23,
-      "categorize_ms": 1.06,
-      "affordability_ms": 0.34,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.29,
+      "categorize_ms": 1.28,
+      "affordability_ms": 0.44,
+      "retrieve_ms": 20.74,
+      "decide_ms": 0.04
     }
   },
   {
@@ -3423,7 +3423,7 @@
         "title": "Minimum disposable-income buffer",
         "version": "2026-07.2",
         "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.3463
+        "score": 0.6392
       },
       {
         "policy_id": "DQ-003",
@@ -3431,7 +3431,7 @@
         "title": "Refunds and reversals",
         "version": "2026-07.2",
         "quote": "A refund is the return of earlier spending, **never income**. Where a refund can be matched to an earlier debit from the same merchant, it must be netted against that spending category. An unmatched refund must be excluded from the assessment entirely.",
-        "score": 0.2653
+        "score": 0.6639
       }
     ],
     "human_review_required": true,
@@ -3441,7 +3441,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "refund_heavy",
     "metrics": {
@@ -3664,11 +3664,11 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.22,
-      "categorize_ms": 1.04,
-      "affordability_ms": 0.74,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.28,
+      "categorize_ms": 1.34,
+      "affordability_ms": 0.97,
+      "retrieve_ms": 9.59,
+      "decide_ms": 0.02
     }
   },
   {
@@ -3700,7 +3700,7 @@
         "title": "Minimum disposable-income buffer",
         "version": "2026-07.2",
         "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.3241
+        "score": 0.5952
       },
       {
         "policy_id": "DQ-004",
@@ -3708,7 +3708,7 @@
         "title": "Duplicate transactions",
         "version": "2026-07.2",
         "quote": "Exact duplicate postings (same account, date, description, amount and type) must be detected and removed before calculation, and the removal must be recorded in the assessment's evidence so a reviewer can see what was excluded.",
-        "score": 0.3266
+        "score": 0.5816
       }
     ],
     "human_review_required": true,
@@ -3718,7 +3718,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "duplicate_glitch",
     "metrics": {
@@ -3920,16 +3920,16 @@
     },
     "retrieved_ids": [
       "DQ-004",
-      "POL-001",
       "POL-002",
+      "POL-004",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.21,
-      "categorize_ms": 1.03,
-      "affordability_ms": 0.31,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.27,
+      "categorize_ms": 1.32,
+      "affordability_ms": 0.45,
+      "retrieve_ms": 16.12,
+      "decide_ms": 0.03
     }
   },
   {
@@ -3961,7 +3961,7 @@
         "title": "Cash withdrawals",
         "version": "2026-07.2",
         "quote": "Cash withdrawals are spending whose purpose cannot be verified from account data. They count as expenditure, but where cash withdrawals exceed **25% of total debit value** the spending picture is too opaque for an automated recommendation and the case must be **referred**.",
-        "score": 0.4035
+        "score": 0.5647
       }
     ],
     "human_review_required": true,
@@ -3971,7 +3971,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "cash_heavy",
     "metrics": {
@@ -4202,16 +4202,16 @@
     },
     "retrieved_ids": [
       "DQ-005",
-      "POL-001",
       "POL-002",
+      "POL-004",
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.25,
-      "categorize_ms": 1.17,
-      "affordability_ms": 0.38,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.32,
+      "categorize_ms": 1.43,
+      "affordability_ms": 0.49,
+      "retrieve_ms": 15.67,
+      "decide_ms": 0.03
     }
   },
   {
@@ -4243,7 +4243,7 @@
         "title": "Income recognition and coverage",
         "version": "2026-07.2",
         "quote": "Eligible income means inflows recognisable as employment, self-employment or benefits income. Unrecognised inflows are not income (DQ-001, DQ-003 apply). Eligible income must be observed in at least **two** distinct months. The observation window must be **contiguous**: a missing month indicates incomplete account coverage. Where no eligible income is recognised, or the window ",
-        "score": 0.2903
+        "score": 0.4995
       }
     ],
     "human_review_required": true,
@@ -4253,7 +4253,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "no_income",
     "metrics": {
@@ -4439,11 +4439,11 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.2,
-      "categorize_ms": 0.97,
-      "affordability_ms": 0.28,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.24,
+      "categorize_ms": 1.15,
+      "affordability_ms": 0.37,
+      "retrieve_ms": 10.51,
+      "decide_ms": 0.02
     }
   },
   {
@@ -4475,7 +4475,7 @@
         "title": "Minimum disposable-income buffer",
         "version": "2026-07.2",
         "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.3463
+        "score": 0.6392
       },
       {
         "policy_id": "DQ-003",
@@ -4483,7 +4483,7 @@
         "title": "Refunds and reversals",
         "version": "2026-07.2",
         "quote": "A refund is the return of earlier spending, **never income**. Where a refund can be matched to an earlier debit from the same merchant, it must be netted against that spending category. An unmatched refund must be excluded from the assessment entirely.",
-        "score": 0.2653
+        "score": 0.6639
       }
     ],
     "human_review_required": true,
@@ -4493,7 +4493,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "injection_descriptions",
     "metrics": {
@@ -4690,11 +4690,11 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.2,
-      "categorize_ms": 0.98,
-      "affordability_ms": 0.33,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.25,
+      "categorize_ms": 1.23,
+      "affordability_ms": 0.42,
+      "retrieve_ms": 9.68,
+      "decide_ms": 0.02
     }
   },
   {
@@ -4726,7 +4726,7 @@
         "title": "Income recognition and coverage",
         "version": "2026-07.2",
         "quote": "Eligible income means inflows recognisable as employment, self-employment or benefits income. Unrecognised inflows are not income (DQ-001, DQ-003 apply). Eligible income must be observed in at least **two** distinct months. The observation window must be **contiguous**: a missing month indicates incomplete account coverage. Where no eligible income is recognised, or the window ",
-        "score": 0.2094
+        "score": 0.4408
       }
     ],
     "human_review_required": true,
@@ -4736,7 +4736,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "missing_month",
     "metrics": {
@@ -4904,11 +4904,11 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.17,
-      "categorize_ms": 0.83,
-      "affordability_ms": 0.26,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.21,
+      "categorize_ms": 1.05,
+      "affordability_ms": 0.33,
+      "retrieve_ms": 9.22,
+      "decide_ms": 0.02
     }
   },
   {
@@ -4940,7 +4940,7 @@
         "title": "Unclassified (unknown) transactions",
         "version": "2026-07.2",
         "quote": "Transactions that cannot be confidently categorised must be labelled `unknown`, never guessed. Unknown **debits** must be treated conservatively: they reduce disposable income in full. Where unknown transactions exceed **10% of total debit value**, the automated assessment is unreliable and the case must be **referred** for manual review.",
-        "score": 0.4194
+        "score": 0.5166
       }
     ],
     "human_review_required": true,
@@ -4950,7 +4950,7 @@
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
       "llm": "deterministic",
-      "embeddings": "tfidf"
+      "embeddings": "minilm"
     },
     "profile": "high_unknown",
     "metrics": {
@@ -5159,15 +5159,15 @@
     "retrieved_ids": [
       "DQ-001",
       "POL-002",
-      "POL-005",
-      "POL-009"
+      "POL-009",
+      "POL-010"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.24,
-      "categorize_ms": 1.15,
-      "affordability_ms": 0.35,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.28,
+      "categorize_ms": 1.51,
+      "affordability_ms": 0.46,
+      "retrieve_ms": 8.98,
+      "decide_ms": 0.02
     }
   }
 ]

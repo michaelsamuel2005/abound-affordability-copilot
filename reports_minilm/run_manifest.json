@@ -3,7 +3,7 @@
   "policy_corpus": "2026-07.2",
   "prompts": "v3",
   "llm": "deterministic",
-  "embeddings": "tfidf",
+  "embeddings": "minilm",
   "retrieval_k": 4,
   "thresholds": {
     "min_months": 3,
@@ -36,5 +36,5 @@
     "seed": 4242
   },
   "python": "3.12.13",
-  "duration_s": 1.1
+  "duration_s": 15.0
 }

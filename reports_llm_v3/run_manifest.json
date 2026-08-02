@@ -2,7 +2,7 @@
   "engine": "2.0.0",
   "policy_corpus": "2026-07.2",
   "prompts": "v3",
-  "llm": "deterministic",
+  "llm": "ollama/llama3.2:3b-instruct-q4_K_M",
   "embeddings": "tfidf",
   "retrieval_k": 4,
   "thresholds": {
@@ -36,5 +36,5 @@
     "seed": 4242
   },
   "python": "3.12.13",
-  "duration_s": 1.1
+  "duration_s": 13366.0
 }

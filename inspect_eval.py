@@ -82,11 +82,25 @@ def main() -> int:
     f = s["faithfulness"]
     print(f"\n== GROUNDING CHECK == {f['rate']}  ({f['passed']}/{f['n']})")
     if f.get("llm_rationale_rejected") is not None:
-        print(
-            f"  LLM rationales accepted: {f.get('llm_rationale_accepted_rate')} "
-            f"({f['n'] - f['llm_rationale_rejected']}/{f['n']}) — the rest fell back "
-            f"to the deterministic template, which passes by construction"
-        )
+        n = f["n"]
+        rejected = f["llm_rationale_rejected"]
+        # `llm_rationale_used` was added later; older reports only have the count of
+        # rejections, from which "not rejected" — NOT "served" — can be derived.
+        used = f.get("llm_rationale_used")
+        unavailable = f.get("llm_rationale_unavailable")
+        rate = f.get("llm_rationale_used_rate", f.get("llm_rationale_accepted_rate"))
+        if used is None:
+            print(f"  model rationales: {n - rejected}/{n} not rejected (pre-fix report)")
+        else:
+            print(
+                f"  model-written rationales SERVED: {used}/{n} (rate {rate})"
+                f" — rejected by the validator {rejected}, provider unavailable {unavailable}"
+            )
+            print(
+                "  read the pass rate WITH this: the other "
+                f"{n - used} decisions carry the deterministic template, "
+                "which passes the grounding check by construction"
+            )
     if not f.get("violations"):
         print("  no violations recorded")
     for v in f.get("violations", []):
