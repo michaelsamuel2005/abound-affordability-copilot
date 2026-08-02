@@ -113,6 +113,8 @@
     "passed": 32,
     "n": 32,
     "checker": "deterministic (verbatim quotes + cited-id subset + number grounding + citation presence)",
+    "llm_rationale_rejected": null,
+    "llm_rationale_accepted_rate": null,
     "violations": [],
     "llm_judge": null
   },
@@ -229,6 +231,8 @@
       }
     ],
     "critical_income_inflation_errors": 0,
+    "critical_debt_deflation_errors": 0,
+    "critical_errors_total": 0,
     "critical_examples": []
   },
   "structured_output": {
@@ -247,12 +251,12 @@
   "latency_ms": {
     "affordability_ms": {
       "mean": 0.32,
-      "p50": 0.32,
-      "p95": 0.37
+      "p50": 0.33,
+      "p95": 0.38
     },
     "categorize_ms": {
       "mean": 0.96,
-      "p50": 1.02,
+      "p50": 1.01,
       "p95": 1.13
     },
     "decide_ms": {
@@ -261,19 +265,19 @@
       "p95": 0.01
     },
     "end_to_end": {
-      "mean": 1.71,
+      "mean": 1.7,
       "p50": 1.76,
-      "p95": 2.03
+      "p95": 2.07
     },
     "retrieve_ms": {
-      "mean": 0.21,
+      "mean": 0.22,
       "p50": 0.2,
-      "p95": 0.23
+      "p95": 0.28
     },
     "validate_input_ms": {
       "mean": 0.2,
-      "p50": 0.21,
-      "p95": 0.23
+      "p50": 0.2,
+      "p95": 0.24
     }
   },
   "calibration": {

@@ -108,7 +108,23 @@ def _data_guardrails(m: AffordabilityMetrics, cfg: Thresholds) -> list[WarningFl
     # DQ-007 classification-plausibility checks: a hostile or broken categoriser
     # can be sign-consistent yet implausible (e.g. every debit labelled as an
     # own-account transfer). These deterministic checks force a referral.
-    if m.n_internal_transfer_txns and m.internal_transfer_gross > 0:
+    #
+    # The leg-balance test is only ANSWERABLE when both legs could be observed,
+    # i.e. when at least two accounts are connected. On a single-account applicant
+    # a transfer to an external savings account has no visible counterpart, so an
+    # imbalance is the expected reading, not a suspicious one. Before this gate the
+    # check fired on every honest single-account saver: in the live-LLM run of
+    # 2026-08-01 it referred 7 of 11 approve-labelled applicants (false-positive
+    # referral rate 0.636) because the model reasonably labelled "TRANSFER TO
+    # SAVINGS" as internal_transfer. Real Open Banking coverage is frequently
+    # partial, so the assumption was wrong in production terms too.
+    #
+    # Residual risk, stated plainly: on single-account applicants a sign-valid
+    # hostile categoriser can still hide debits behind `internal_transfer` without
+    # tripping this check. The remaining defences for that population are the
+    # no_essential_spend check below, the measured critical-error counts, and human
+    # review — not this rule.
+    if m.n_accounts >= 2 and m.n_internal_transfer_txns and m.internal_transfer_gross > 0:
         tol = max(
             cfg.transfer_imbalance_floor_gbp,
             cfg.transfer_imbalance_tolerance * m.internal_transfer_gross,

@@ -1,0 +1,343 @@
+--- a/src/agent.py
++++ b/src/agent.py
+@@ -90,7 +90,13 @@
+ # policy IDs and may only use numbers that appear in the supplied facts.
+ # ---------------------------------------------------------------------------
+ 
+-_NUM_RE = re.compile(r"\d[\d,]*(?:\.\d+)?")
++# A leading minus belongs to the number ONLY when it is not preceded by a digit
++# (so "£-458" parses as -458, while "12-36 months" still parses as 12 and 36).
++# Without the sign, a rationale quoting a negative fact as "£-458" extracted
++# "458", which never matched the allowed form "-458" -> a false ungrounded-number
++# violation on every applicant with a negative post-repayment buffer. Found by
++# the live-LLM run of 2026-08-01; regression-tested in test_agent.py.
++_NUM_RE = re.compile(r"(?<!\d)-?\d[\d,]*(?:\.\d+)?")
+ _ID_RE = re.compile(r"\[((?:POL|DQ)-\d+)\]")
+ 
+ 
+@@ -177,29 +183,34 @@
+     max_afford: float,
+ ) -> dict:
+     """The ONLY numbers the rationale (LLM or template) may use — also the
+-    reference set the faithfulness checker validates against."""
+-    return {
+-        "requested_amount": requested,
+-        "term_months": term,
+-        "monthly_repayment": repayment,
+-        "monthly_income_assessed": m.monthly_income_assessed,
+-        "essential_spend": m.essential_spend,
+-        "existing_debt_repayments": m.existing_debt_repayments,
+-        "unknown_spend": m.unknown_spend,
+-        "disposable_income": m.disposable_income,
+-        "disposable_after_repayment": disposable_after,
+-        "dti_including_new": dti_new,
+-        "gambling_ratio": m.gambling_ratio,
+-        "income_volatility": m.income_volatility,
+-        "months_observed": m.months_observed,
+-        "n_transactions": m.n_transactions,
+-        "distress_events": m.distress_events,
+-        "max_affordable_amount": max_afford,
+-        "unknown_share": m.unknown_share,
+-        "cash_share": m.cash_share,
+-        "benefits_share": m.benefits_share,
+-        "essential_share": m.essential_share,
++    reference set the faithfulness checker validates against.
++
++    Every numeric field of the metrics object is included, not a hand-picked
++    subset. The subset was a latent defect: deterministic guardrail messages are
++    spliced verbatim into the template rationale, so any warning quoting a metric
++    outside the subset made the template fail the system's own grounding check.
++    The live-LLM run of 2026-08-01 hit exactly that via DQ-007's transfer-imbalance
++    message ("net £775 vs gross £775" — neither field was a fact). Enumerating the
++    metrics keeps the invariant "every number is a computed fact" true by
++    construction. Percentage (x100) forms remain restricted to RATIO_FACTS, so the
++    audit-found fact-x100 hole stays closed.
++    """
++    facts = {
++        k: v
++        for k, v in m.model_dump().items()
++        if isinstance(v, int | float) and not isinstance(v, bool)
+     }
++    facts.update(
++        {
++            "requested_amount": requested,
++            "term_months": term,
++            "monthly_repayment": repayment,
++            "disposable_after_repayment": disposable_after,
++            "dti_including_new": dti_new,
++            "max_affordable_amount": max_afford,
++        }
++    )
++    return facts
+ 
+ 
+ # ---------------------------------------------------------------------------
+--- a/src/schemas.py
++++ b/src/schemas.py
+@@ -199,6 +199,7 @@
+     months_observed: int
+     coverage_gap: bool = False  # non-contiguous months in the window
+     n_transactions: int
++    n_accounts: int = 1  # distinct connected accounts observed in the window
+     n_duplicates_removed: int = 0
+     n_internal_transfer_txns: int = 0
+     internal_transfer_net: float = 0.0  # signed sum of transfer legs (should be ~0)
+--- a/src/affordability.py
++++ b/src/affordability.py
+@@ -301,6 +301,7 @@
+         months_observed=len(months),
+         coverage_gap=gap,
+         n_transactions=len(txns),
++        n_accounts=len({t.account_id for t in txns}),
+         n_duplicates_removed=len(dropped),
+         n_internal_transfer_txns=len(transfers),
+         internal_transfer_net=pounds(transfer_net_p),
+--- a/src/decision_rules.py
++++ b/src/decision_rules.py
+@@ -108,7 +108,23 @@
+     # DQ-007 classification-plausibility checks: a hostile or broken categoriser
+     # can be sign-consistent yet implausible (e.g. every debit labelled as an
+     # own-account transfer). These deterministic checks force a referral.
+-    if m.n_internal_transfer_txns and m.internal_transfer_gross > 0:
++    #
++    # The leg-balance test is only ANSWERABLE when both legs could be observed,
++    # i.e. when at least two accounts are connected. On a single-account applicant
++    # a transfer to an external savings account has no visible counterpart, so an
++    # imbalance is the expected reading, not a suspicious one. Before this gate the
++    # check fired on every honest single-account saver: in the live-LLM run of
++    # 2026-08-01 it referred 7 of 11 approve-labelled applicants (false-positive
++    # referral rate 0.636) because the model reasonably labelled "TRANSFER TO
++    # SAVINGS" as internal_transfer. Real Open Banking coverage is frequently
++    # partial, so the assumption was wrong in production terms too.
++    #
++    # Residual risk, stated plainly: on single-account applicants a sign-valid
++    # hostile categoriser can still hide debits behind `internal_transfer` without
++    # tripping this check. The remaining defences for that population are the
++    # no_essential_spend check below, the measured critical-error counts, and human
++    # review — not this rule.
++    if m.n_accounts >= 2 and m.n_internal_transfer_txns and m.internal_transfer_gross > 0:
+         tol = max(
+             cfg.transfer_imbalance_floor_gbp,
+             cfg.transfer_imbalance_tolerance * m.internal_transfer_gross,
+--- a/src/evaluate.py
++++ b/src/evaluate.py
+@@ -34,7 +34,11 @@
+ from agent import assess, build_facts, validate_rationale
+ from config import retrieval_config, thresholds
+ from prompts import PROMPT_VERSION
+-from schemas import AffordabilityMetrics, Outcome
++from schemas import DEBT, AffordabilityMetrics, Outcome
++
++# Committed-credit categories, as strings. A repayment misclassified out of this
++# set silently lowers DTI, which is the "debt deflation" critical error class.
++DEBT_CATEGORIES = {c.value for c in DEBT}
+ 
+ CLASSES = [Outcome.approve.value, Outcome.refer.value, Outcome.decline.value]
+ SAFETY = "safety"  # guardrail/review-severity expected warnings
+@@ -112,7 +116,7 @@
+     fp_referrals = approve_expected = 0
+     ret_hit = ret_total = case_hits = top1_hits = 0
+     rt_hit = rt_total = rt_case_hits = 0  # runtime-decisive coverage
+-    faithful_n = judge_yes = judge_n = 0
++    faithful_n = judge_yes = judge_n = rationale_rejected_n = 0
+     cat_correct = cat_total = 0
+     cat_conf: Counter = Counter()
+     per_cat: dict[str, Counter] = defaultdict(Counter)
+@@ -167,6 +171,11 @@
+         # faithfulness
+         faith, probs = _check_faithfulness(decision, diag, retriever, cfg)
+         faithful_n += int(faith)
++        # In LLM mode a rejected rationale is silently replaced by the deterministic
++        # template, which passes the grounding check by construction. Reporting the
++        # pass rate alone would therefore flatter the model: the 2026-08-01 run had
++        # 28 of 53 rationales rejected. Track acceptance so the two are read together.
++        rationale_rejected_n += int("rationale_rejected" in raised)
+         if not faith:
+             faith_viol.append({"applicant_id": aid, "problems": probs[:3]})
+         if judge_llm is not None:
+@@ -189,13 +198,29 @@
+                     per_cat[true_cat]["correct"] += 1
+                 else:
+                     cat_conf[(true_cat, pred_cat)] += 1
++                    # Two critical error classes — both move an applicant toward a
++                    # MORE permissive outcome, which is the direction that matters.
++                    #  * income inflation: a non-income credit counted as income
++                    #    (numerator of affordability up).
++                    #  * debt deflation: a committed repayment counted as ordinary
++                    #    spend, so it leaves existing_debt_repayments and DTI falls.
++                    # Debt deflation was added after the live-LLM run of 2026-08-01,
++                    # where the ONLY unsafe decision (EVAL-026, refer -> approve with
++                    # dti_borderline never firing) was caused by lost loan repayments
++                    # and was invisible to the income-inflation counter.
++                    kind = None
+                     if pred_cat == "income" and true_cat not in ("income", "benefits"):
++                        kind = "income_inflation"
++                    elif true_cat in DEBT_CATEGORIES and pred_cat not in DEBT_CATEGORIES:
++                        kind = "debt_deflation"
++                    if kind:
+                         critical_errors.append(
+                             {
++                                "kind": kind,
+                                 "applicant_id": aid,
+                                 "transaction_id": tid,
+                                 "true": true_cat,
+-                                "predicted": "income",
++                                "predicted": pred_cat,
+                             }
+                         )
+ 
+@@ -308,6 +333,12 @@
+             "n": n,
+             "checker": "deterministic (verbatim quotes + cited-id subset + "
+             "number grounding + citation presence)",
++            # Read WITH the pass rate: a rejected LLM rationale falls back to the
++            # deterministic template, which passes by construction.
++            "llm_rationale_rejected": rationale_rejected_n if llm is not None else None,
++            "llm_rationale_accepted_rate": (
++                round((n - rationale_rejected_n) / n, 3) if llm is not None and n else None
++            ),
+             "violations": faith_viol[:10],
+             "llm_judge": (
+                 {"rate": round(judge_yes / judge_n, 3), "n": judge_n} if judge_n else None
+@@ -325,7 +356,13 @@
+                 "top_confusions": [
+                     {"true": t, "predicted": p, "count": c} for (t, p), c in cat_conf.most_common(8)
+                 ],
+-                "critical_income_inflation_errors": len(critical_errors),
++                "critical_income_inflation_errors": sum(
++                    1 for e in critical_errors if e["kind"] == "income_inflation"
++                ),
++                "critical_debt_deflation_errors": sum(
++                    1 for e in critical_errors if e["kind"] == "debt_deflation"
++                ),
++                "critical_errors_total": len(critical_errors),
+                 "critical_examples": critical_errors[:5],
+             }
+             if truth
+--- a/tests/test_agent.py
++++ b/tests/test_agent.py
+@@ -129,6 +129,72 @@
+     assert ok, problems
+ 
+ 
++def test_negative_fact_quoted_with_its_sign_is_grounded():
++    """Regression (live-LLM run 2026-08-01): an over-indebted applicant's template
++    rationale quotes a NEGATIVE post-repayment buffer as "£-458". The number
++    extractor dropped the sign and produced "458", which never matched the allowed
++    form "-458" -> a false ungrounded-number violation on 4 of 32 eval cases."""
++    facts = {"disposable_after_repayment": -458.30, "requested_amount": 5000.0}
++    ok, problems = validate_rationale(
++        "At £5,000 the post-repayment buffer falls to £-458 [POL-009].",
++        facts,
++        {"POL-009"},
++        thresholds(),
++    )
++    assert ok, problems
++
++
++def test_sign_is_not_stripped_when_checking_numbers():
++    """The sign fix must not become a laundering route: a rationale claiming a
++    POSITIVE buffer when the fact is negative is still ungrounded."""
++    facts = {"disposable_after_repayment": -458.30}
++    ok, problems = validate_rationale(
++        "The post-repayment buffer is £458 [POL-009].", facts, {"POL-009"}, thresholds()
++    )
++    assert not ok and any("458" in p for p in problems)
++
++
++def test_hyphenated_ranges_are_not_read_as_negative_numbers():
++    facts = {"term_months": 36, "months_observed": 12}
++    ok, problems = validate_rationale(
++        "Observed 12-36 months of history [POL-002].", facts, {"POL-002"}, thresholds()
++    )
++    assert ok, problems
++
++
++def test_guardrail_message_quantities_are_grounded(dev_data, retriever):
++    """Regression (live-LLM run 2026-08-01): guardrail rationales splice raw warning
++    messages into the template, and DQ-007's transfer-imbalance message quotes
++    internal_transfer_net/gross. Those were absent from build_facts, so the
++    DETERMINISTIC template failed the system's own grounding check. build_facts now
++    enumerates every numeric metric field, so any deterministic message is grounded
++    by construction."""
++    from affordability import compute_metrics  # noqa: PLC0415
++    from agent import build_facts  # noqa: PLC0415
++    from schemas import AffordabilityMetrics  # noqa: PLC0415
++
++    metric_fields = {
++        k
++        for k, v in AffordabilityMetrics.model_fields.items()
++        if k != "evidence" and k != "coverage_gap"
++    }
++    apps, tx_by = dev_data
++    a = apps[0]
++    d, diag = assess(a, tx_by[a["applicant_id"]], retriever)
++    facts = build_facts(
++        AffordabilityMetrics(**diag["metrics"]),
++        d.requested_amount,
++        d.term_months,
++        d.monthly_repayment,
++        d.disposable_after_repayment,
++        d.dti_including_new,
++        d.max_affordable_amount,
++    )
++    missing = metric_fields - set(facts)
++    assert not missing, f"metric fields absent from the fact set: {sorted(missing)}"
++    assert compute_metrics is not None
++
++
+ def test_adversarial_llm_obeying_injection_cannot_produce_approve(retriever):
+     """Worst-case LLM behaviour: the model 'obeys' a hostile instruction and
+     labels EVERY transaction as income. Sign-consistency rejects it on all
+--- a/tests/test_decision_rules.py
++++ b/tests/test_decision_rules.py
+@@ -215,6 +215,7 @@
+     leave grossly one-sided transfer legs -> refer, never approve."""
+     rr = run(
+         make_metrics(
++            n_accounts=2,
+             n_internal_transfer_txns=120,
+             internal_transfer_net=-13000.0,
+             internal_transfer_gross=13000.0,
+@@ -225,6 +226,41 @@
+     assert "DQ-007" in rr.decisive_policy_ids
+ 
+ 
++def test_single_account_one_sided_transfers_do_not_trigger_imbalance():
++    """Regression (live-LLM run 2026-08-01): the leg-balance test is unanswerable on
++    a single connected account — a transfer to an external savings account has no
++    visible counterpart — and firing it referred 7 of 11 approve-labelled applicants
++    (false-positive referral rate 0.636). Now gated on n_accounts >= 2."""
++    rr = run(
++        make_metrics(
++            n_accounts=1,
++            n_internal_transfer_txns=6,
++            internal_transfer_net=-1800.0,
++            internal_transfer_gross=1800.0,
++        )
++    )
++    assert rr.outcome == Outcome.approve
++    assert WarningCode.transfer_imbalance not in codes(rr)
++
++
++def test_single_account_hostile_pattern_still_referred_by_essential_spend():
++    """The gate must not open an approval route: the sign-valid attack that hides
++    every debit behind `internal_transfer` leaves zero essential spend, and the
++    second DQ-007 check still catches it on a single-account applicant."""
++    rr = run(
++        make_metrics(
++            n_accounts=1,
++            n_internal_transfer_txns=120,
++            internal_transfer_net=-13000.0,
++            internal_transfer_gross=13000.0,
++            essential_spend=0.0,
++            essential_share=0.0,
++        )
++    )
++    assert rr.outcome == Outcome.refer
++    assert WarningCode.no_essential_spend in codes(rr)
++
++
+ def test_balanced_transfers_do_not_trigger_imbalance():
+     rr = run(
+         make_metrics(

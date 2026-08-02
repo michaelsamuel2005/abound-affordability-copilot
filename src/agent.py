@@ -90,7 +90,13 @@ def build_query(
 # policy IDs and may only use numbers that appear in the supplied facts.
 # ---------------------------------------------------------------------------
 
-_NUM_RE = re.compile(r"\d[\d,]*(?:\.\d+)?")
+# A leading minus belongs to the number ONLY when it is not preceded by a digit
+# (so "£-458" parses as -458, while "12-36 months" still parses as 12 and 36).
+# Without the sign, a rationale quoting a negative fact as "£-458" extracted
+# "458", which never matched the allowed form "-458" -> a false ungrounded-number
+# violation on every applicant with a negative post-repayment buffer. Found by
+# the live-LLM run of 2026-08-01; regression-tested in test_agent.py.
+_NUM_RE = re.compile(r"(?<!\d)-?\d[\d,]*(?:\.\d+)?")
 _ID_RE = re.compile(r"\[((?:POL|DQ)-\d+)\]")
 
 
@@ -177,29 +183,34 @@ def build_facts(
     max_afford: float,
 ) -> dict:
     """The ONLY numbers the rationale (LLM or template) may use — also the
-    reference set the faithfulness checker validates against."""
-    return {
-        "requested_amount": requested,
-        "term_months": term,
-        "monthly_repayment": repayment,
-        "monthly_income_assessed": m.monthly_income_assessed,
-        "essential_spend": m.essential_spend,
-        "existing_debt_repayments": m.existing_debt_repayments,
-        "unknown_spend": m.unknown_spend,
-        "disposable_income": m.disposable_income,
-        "disposable_after_repayment": disposable_after,
-        "dti_including_new": dti_new,
-        "gambling_ratio": m.gambling_ratio,
-        "income_volatility": m.income_volatility,
-        "months_observed": m.months_observed,
-        "n_transactions": m.n_transactions,
-        "distress_events": m.distress_events,
-        "max_affordable_amount": max_afford,
-        "unknown_share": m.unknown_share,
-        "cash_share": m.cash_share,
-        "benefits_share": m.benefits_share,
-        "essential_share": m.essential_share,
+    reference set the faithfulness checker validates against.
+
+    Every numeric field of the metrics object is included, not a hand-picked
+    subset. The subset was a latent defect: deterministic guardrail messages are
+    spliced verbatim into the template rationale, so any warning quoting a metric
+    outside the subset made the template fail the system's own grounding check.
+    The live-LLM run of 2026-08-01 hit exactly that via DQ-007's transfer-imbalance
+    message ("net £775 vs gross £775" — neither field was a fact). Enumerating the
+    metrics keeps the invariant "every number is a computed fact" true by
+    construction. Percentage (x100) forms remain restricted to RATIO_FACTS, so the
+    audit-found fact-x100 hole stays closed.
+    """
+    facts = {
+        k: v
+        for k, v in m.model_dump().items()
+        if isinstance(v, int | float) and not isinstance(v, bool)
     }
+    facts.update(
+        {
+            "requested_amount": requested,
+            "term_months": term,
+            "monthly_repayment": repayment,
+            "disposable_after_repayment": disposable_after,
+            "dti_including_new": dti_new,
+            "max_affordable_amount": max_afford,
+        }
+    )
+    return facts
 
 
 # ---------------------------------------------------------------------------

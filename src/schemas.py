@@ -199,6 +199,7 @@ class AffordabilityMetrics(BaseModel):
     months_observed: int
     coverage_gap: bool = False  # non-contiguous months in the window
     n_transactions: int
+    n_accounts: int = 1  # distinct connected accounts observed in the window
     n_duplicates_removed: int = 0
     n_internal_transfer_txns: int = 0
     internal_transfer_net: float = 0.0  # signed sum of transfer legs (should be ~0)

@@ -1,0 +1,28 @@
+# Retained test + coverage evidence (revision 3)
+# Command: pytest --cov --cov-report=term --cov-report=xml:reports/coverage.xml
+# Environment: Python 3.11.15, ruff 0.16.0, authoring sandbox, 2026-07-31
+#
+........................................................................ [ 53%]
+......................ss.......................................          [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.11.15-final-0 _______________
+
+Name                    Stmts   Miss  Cover
+-------------------------------------------
+app.py                    190      3  98.4%
+src/affordability.py      162      0 100.0%
+src/agent.py              164      2  98.8%
+src/categorize.py         101      3  97.0%
+src/config.py              56      0 100.0%
+src/dataio.py              22      0 100.0%
+src/decision_rules.py     120      0 100.0%
+src/evaluate.py           129     12  90.7%
+src/llm.py                115     37  67.8%
+src/obs.py                 40      0 100.0%
+src/prompts.py             19      0 100.0%
+src/retriever.py          102     16  84.3%
+src/schemas.py            222      0 100.0%
+-------------------------------------------
+TOTAL                    1442     73  94.9%
+Coverage XML written to file reports/coverage.xml
+133 passed, 2 skipped in 52.02s

@@ -129,6 +129,72 @@ def test_rationale_numbers_tolerate_formatting():
     assert ok, problems
 
 
+def test_negative_fact_quoted_with_its_sign_is_grounded():
+    """Regression (live-LLM run 2026-08-01): an over-indebted applicant's template
+    rationale quotes a NEGATIVE post-repayment buffer as "£-458". The number
+    extractor dropped the sign and produced "458", which never matched the allowed
+    form "-458" -> a false ungrounded-number violation on 4 of 32 eval cases."""
+    facts = {"disposable_after_repayment": -458.30, "requested_amount": 5000.0}
+    ok, problems = validate_rationale(
+        "At £5,000 the post-repayment buffer falls to £-458 [POL-009].",
+        facts,
+        {"POL-009"},
+        thresholds(),
+    )
+    assert ok, problems
+
+
+def test_sign_is_not_stripped_when_checking_numbers():
+    """The sign fix must not become a laundering route: a rationale claiming a
+    POSITIVE buffer when the fact is negative is still ungrounded."""
+    facts = {"disposable_after_repayment": -458.30}
+    ok, problems = validate_rationale(
+        "The post-repayment buffer is £458 [POL-009].", facts, {"POL-009"}, thresholds()
+    )
+    assert not ok and any("458" in p for p in problems)
+
+
+def test_hyphenated_ranges_are_not_read_as_negative_numbers():
+    facts = {"term_months": 36, "months_observed": 12}
+    ok, problems = validate_rationale(
+        "Observed 12-36 months of history [POL-002].", facts, {"POL-002"}, thresholds()
+    )
+    assert ok, problems
+
+
+def test_guardrail_message_quantities_are_grounded(dev_data, retriever):
+    """Regression (live-LLM run 2026-08-01): guardrail rationales splice raw warning
+    messages into the template, and DQ-007's transfer-imbalance message quotes
+    internal_transfer_net/gross. Those were absent from build_facts, so the
+    DETERMINISTIC template failed the system's own grounding check. build_facts now
+    enumerates every numeric metric field, so any deterministic message is grounded
+    by construction."""
+    from affordability import compute_metrics  # noqa: PLC0415
+    from agent import build_facts  # noqa: PLC0415
+    from schemas import AffordabilityMetrics  # noqa: PLC0415
+
+    metric_fields = {
+        k
+        for k, v in AffordabilityMetrics.model_fields.items()
+        if k != "evidence" and k != "coverage_gap"
+    }
+    apps, tx_by = dev_data
+    a = apps[0]
+    d, diag = assess(a, tx_by[a["applicant_id"]], retriever)
+    facts = build_facts(
+        AffordabilityMetrics(**diag["metrics"]),
+        d.requested_amount,
+        d.term_months,
+        d.monthly_repayment,
+        d.disposable_after_repayment,
+        d.dti_including_new,
+        d.max_affordable_amount,
+    )
+    missing = metric_fields - set(facts)
+    assert not missing, f"metric fields absent from the fact set: {sorted(missing)}"
+    assert compute_metrics is not None
+
+
 def test_adversarial_llm_obeying_injection_cannot_produce_approve(retriever):
     """Worst-case LLM behaviour: the model 'obeys' a hostile instruction and
     labels EVERY transaction as income. Sign-consistency rejects it on all

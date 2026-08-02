@@ -1,0 +1,40 @@
+{
+  "engine": "2.0.0",
+  "policy_corpus": "2026-07.2",
+  "prompts": "v3",
+  "llm": "ollama/llama3.2:3b-instruct-q4_K_M",
+  "embeddings": "tfidf",
+  "retrieval_k": 4,
+  "thresholds": {
+    "min_months": 3,
+    "min_transactions": 40,
+    "min_income_months": 2,
+    "max_unknown_share": 0.1,
+    "max_cash_share": 0.25,
+    "transfer_imbalance_tolerance": 0.2,
+    "transfer_imbalance_floor_gbp": 100.0,
+    "buffer_gbp": 150.0,
+    "dti_refer": 0.4,
+    "dti_max": 0.45,
+    "gambling_refer": 0.1,
+    "volatility_max": 0.35,
+    "distress_max": 2,
+    "benefits_share_review": 0.5,
+    "essential_share_high": 0.6,
+    "reduced_offer_min_gbp": 500.0,
+    "reduced_offer_min_fraction": 0.5,
+    "apr": 0.249
+  },
+  "dev_set": {
+    "applicants": 21,
+    "transactions": 3093,
+    "seed": 11
+  },
+  "eval_set": {
+    "applicants": 32,
+    "transactions": 4567,
+    "seed": 4242
+  },
+  "python": "3.12.13",
+  "duration_s": 16109.7
+}

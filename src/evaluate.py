@@ -34,7 +34,11 @@ from collections import Counter, defaultdict
 from agent import assess, build_facts, validate_rationale
 from config import retrieval_config, thresholds
 from prompts import PROMPT_VERSION
-from schemas import AffordabilityMetrics, Outcome
+from schemas import DEBT, AffordabilityMetrics, Outcome
+
+# Committed-credit categories, as strings. A repayment misclassified out of this
+# set silently lowers DTI, which is the "debt deflation" critical error class.
+DEBT_CATEGORIES = {c.value for c in DEBT}
 
 CLASSES = [Outcome.approve.value, Outcome.refer.value, Outcome.decline.value]
 SAFETY = "safety"  # guardrail/review-severity expected warnings
@@ -112,7 +116,7 @@ def evaluate(
     fp_referrals = approve_expected = 0
     ret_hit = ret_total = case_hits = top1_hits = 0
     rt_hit = rt_total = rt_case_hits = 0  # runtime-decisive coverage
-    faithful_n = judge_yes = judge_n = 0
+    faithful_n = judge_yes = judge_n = rationale_rejected_n = 0
     cat_correct = cat_total = 0
     cat_conf: Counter = Counter()
     per_cat: dict[str, Counter] = defaultdict(Counter)
@@ -167,6 +171,11 @@ def evaluate(
         # faithfulness
         faith, probs = _check_faithfulness(decision, diag, retriever, cfg)
         faithful_n += int(faith)
+        # In LLM mode a rejected rationale is silently replaced by the deterministic
+        # template, which passes the grounding check by construction. Reporting the
+        # pass rate alone would therefore flatter the model: the 2026-08-01 run had
+        # 28 of 53 rationales rejected. Track acceptance so the two are read together.
+        rationale_rejected_n += int("rationale_rejected" in raised)
         if not faith:
             faith_viol.append({"applicant_id": aid, "problems": probs[:3]})
         if judge_llm is not None:
@@ -189,13 +198,29 @@ def evaluate(
                     per_cat[true_cat]["correct"] += 1
                 else:
                     cat_conf[(true_cat, pred_cat)] += 1
+                    # Two critical error classes — both move an applicant toward a
+                    # MORE permissive outcome, which is the direction that matters.
+                    #  * income inflation: a non-income credit counted as income
+                    #    (numerator of affordability up).
+                    #  * debt deflation: a committed repayment counted as ordinary
+                    #    spend, so it leaves existing_debt_repayments and DTI falls.
+                    # Debt deflation was added after the live-LLM run of 2026-08-01,
+                    # where the ONLY unsafe decision (EVAL-026, refer -> approve with
+                    # dti_borderline never firing) was caused by lost loan repayments
+                    # and was invisible to the income-inflation counter.
+                    kind = None
                     if pred_cat == "income" and true_cat not in ("income", "benefits"):
+                        kind = "income_inflation"
+                    elif true_cat in DEBT_CATEGORIES and pred_cat not in DEBT_CATEGORIES:
+                        kind = "debt_deflation"
+                    if kind:
                         critical_errors.append(
                             {
+                                "kind": kind,
                                 "applicant_id": aid,
                                 "transaction_id": tid,
                                 "true": true_cat,
-                                "predicted": "income",
+                                "predicted": pred_cat,
                             }
                         )
 
@@ -308,6 +333,12 @@ def evaluate(
             "n": n,
             "checker": "deterministic (verbatim quotes + cited-id subset + "
             "number grounding + citation presence)",
+            # Read WITH the pass rate: a rejected LLM rationale falls back to the
+            # deterministic template, which passes by construction.
+            "llm_rationale_rejected": rationale_rejected_n if llm is not None else None,
+            "llm_rationale_accepted_rate": (
+                round((n - rationale_rejected_n) / n, 3) if llm is not None and n else None
+            ),
             "violations": faith_viol[:10],
             "llm_judge": (
                 {"rate": round(judge_yes / judge_n, 3), "n": judge_n} if judge_n else None
@@ -325,7 +356,13 @@ def evaluate(
                 "top_confusions": [
                     {"true": t, "predicted": p, "count": c} for (t, p), c in cat_conf.most_common(8)
                 ],
-                "critical_income_inflation_errors": len(critical_errors),
+                "critical_income_inflation_errors": sum(
+                    1 for e in critical_errors if e["kind"] == "income_inflation"
+                ),
+                "critical_debt_deflation_errors": sum(
+                    1 for e in critical_errors if e["kind"] == "debt_deflation"
+                ),
+                "critical_errors_total": len(critical_errors),
                 "critical_examples": critical_errors[:5],
             }
             if truth

@@ -301,6 +301,7 @@ def compute_metrics(
         months_observed=len(months),
         coverage_gap=gap,
         n_transactions=len(txns),
+        n_accounts=len({t.account_id for t in txns}),
         n_duplicates_removed=len(dropped),
         n_internal_transfer_txns=len(transfers),
         internal_transfer_net=pounds(transfer_net_p),

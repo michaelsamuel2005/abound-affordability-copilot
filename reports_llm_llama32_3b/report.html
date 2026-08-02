@@ -1,0 +1,285 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Affordability Copilot — evaluation report</title><style>
+body{font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;margin:0;
+     background:#f6f8fa;color:#1f2937}
+.wrap{max-width:1080px;margin:0 auto;padding:26px 22px 48px}
+h1{color:#0f2b46;margin:0 0 2px;font-size:23px}h2{color:#0f2b46;font-size:17px;margin:26px 0 10px}
+.sub{color:#57606a;margin:0 0 18px;font-size:13.5px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0 6px}
+.tile{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:13px 15px}
+.tile .lab{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:#57606a}
+.tile .val{font-size:22px;font-weight:700;color:#0f2b46;margin-top:3px}
+.tile .det{font-size:11.5px;color:#57606a;margin-top:2px}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:11px;padding:14px 16px;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.badge{color:#fff;border-radius:6px;padding:2px 10px;font-weight:700;font-size:12px;
+       text-transform:uppercase}
+.muted{color:#57606a;font-size:12.5px}.k{color:#0f2b46;font-weight:600}
+.warn{color:#9a6700;font-size:12.5px}.guard{color:#b31d33;font-size:12.5px;font-weight:600}
+.cite{color:#0969da;font-size:12px}
+.reason{font-size:13.5px;margin:8px 0 4px}
+table{border-collapse:collapse;width:100%;font-size:12.5px;background:#fff}
+td,th{border:1px solid #e8edf2;padding:5px 8px;text-align:left;vertical-align:top}
+th{background:#f0f3f6;color:#0f2b46}
+.ok{color:#1a7f37;font-weight:600}.bad{color:#b31d33;font-weight:600}
+</style></head>
+<body><div class="wrap">
+<h1>Affordability Copilot — cashflow-underwriting evaluation</h1>
+<p class="sub">Held-out eval set: 32 applicants /
+4,567 transactions · mode: ollama/llama3.2:3b-instruct-q4_K_M ·
+embeddings: tfidf · prompts v3 ·
+engine 2.0.0 · policy 2026-07.2. The LLM never makes the credit
+decision — a deterministic rules engine does; recommendations are for human review.</p>
+<div class="tiles"><div class="tile"><div class="lab">Decision accuracy</div><div class="val">75%</div><div class="det">24/32 regression set</div></div><div class="tile"><div class="lab">Grounding-check pass (faithfulness)</div><div class="val">84%</div><div class="det">27/32 deterministic checks</div></div><div class="tile"><div class="lab">Retrieval hit-rate@4 (labelled)</div><div class="val">95%</div><div class="det">35/37 labelled policy-ID instances</div></div><div class="tile"><div class="lab">Runtime-decisive coverage@4</div><div class="val">96%</div><div class="det">49/51 runtime-decisive IDs</div></div><div class="tile"><div class="lab">Expected-warning recall</div><div class="val">82%</div><div class="det">14/17 expected warnings</div></div><div class="tile"><div class="lab">Categorisation accuracy</div><div class="val">60%</div><div class="det">4,567 labelled txns</div></div><div class="tile"><div class="lab">Pipeline p95 (in-process)</div><div class="val">470038 ms</div><div class="det">ollama/llama3.2:3b-instruct-q4_K_M</div></div></div>
+<h2>Dev-set decisions (illustrative cases)</h2>
+
+    <div class="card"><div class="row">
+      <div><span class="k">APP-001</span>
+           <span class="muted"> · healthy_high</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">The customer&#x27;s application has been referred due to concerns over data quality and classification plausibility.
+
+According to our policy [DQ-002], transfers between the customer&#x27;s own accounts are considered money moved, not earned or spent, and must be excluded from income and expenditure calculations. This means that any internal transfers or savings movements may impact the accuracy of our automated assessment. Furthermore, with an observation window of normal length and no essential spending, we cannot confidently trust our classification.
+
+As a result, our policy [DQ-002] requires us to refer this application for manual review.</div>
+      <div class="muted">requested £8,000/36m · repayment £318 · assessed income £4,300 · disposable £2,281 · after-repayment £1,963 · DTI 7% · max affordable £53,657</div>
+      <div style="margin-top:4px"><span class="guard">guardrail: transfer_imbalance</span> · <span class="warn">transfer_imbalance</span>
+        &nbsp; policy: <span class="cite">[DQ-007]</span> <span class="cite">[DQ-002]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-002</span>
+           <span class="muted"> · healthy_mid</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">The customer&#x27;s application has been REFERRED due to concerns over data quality and classification plausibility.
+
+The policy [DQ-002] states that internal transfers and savings movements should not be included in income or expenditure, as they are considered money moved rather than earned or spent. However, the customer&#x27;s account shows a significant amount of unclassified spend (£55.78) which may indicate an attempt to hide other financial information.
+
+Furthermore, the policy [DQ-007] requires that category assignments pass basic plausibility checks before automated assessments can be trusted. The customer&#x27;s observation window has no essential spending at all (housing, utilities, food, or transport), which suggests that their classification is unreliable and may not accurately reflect their genuine financial situation.
+
+As a result, the automated assessment must be REFERRED for manual review to ensure that the customer&#x27;s true financial situation is assessed correctly.</div>
+      <div class="muted">requested £5,000/24m · repayment £267 · assessed income £2,869 · disposable £876 · after-repayment £610 · DTI 14% · max affordable £13,624</div>
+      <div style="margin-top:4px"><span class="guard">guardrail: transfer_imbalance</span> · <span class="warn">transfer_imbalance</span>
+        &nbsp; policy: <span class="cite">[DQ-007]</span> <span class="cite">[DQ-002]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-003</span>
+           <span class="muted"> · marginal</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">The application for a loan of £8,000 has been referred due to insufficient disposable income buffer. 
+
+According to policy [POL-002], after deducting the proposed new monthly repayment, the customer must retain a minimum monthly disposable-income buffer of £150. However, in this case, the calculated disposable income buffer (£53.89) falls below the required threshold.
+
+As per policy [POL-009], the maximum loan amount is the largest amount whose monthly repayment still leaves the customer at or above the £150 disposable-income buffer. Since the requested amount exceeds this figure, we cannot approve it at the full amount. 
+
+However, since the requested amount (£8,000) is at least half of the request and at least £500, policy [POL-009] allows us to refer the case with a reduced-amount proposal.</div>
+      <div class="muted">requested £8,000/24m · repayment £427 · assessed income £2,332 · disposable £480 · after-repayment £54 · DTI 25% · max affordable £6,198</div>
+      <div style="margin-top:4px"><span class="warn">buffer_breach_reduced_offer</span>
+        &nbsp; policy: <span class="cite">[POL-002]</span> <span class="cite">[POL-009]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-004</span>
+           <span class="muted"> · over_indebted</span></div>
+      <span class="badge" style="background:#b31d33">decline</span></div>
+      <div class="reason">At £7,000 the post-repayment buffer falls to £-387 (&lt; £150) and the maximum affordable (~£0) is far below the request. Policy basis: [POL-002] [POL-009].</div>
+      <div class="muted">requested £7,000/24m · repayment £373 · assessed income £2,477 · disposable £-13 · after-repayment £-387 · DTI 41% · max affordable £0</div>
+      <div style="margin-top:4px"><span class="warn"></span>
+        &nbsp; policy: <span class="cite">[POL-002]</span> <span class="cite">[POL-009]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-005</span>
+           <span class="muted"> · gambling</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">Gambling spend is 18% of assessed income (limit 10%); manual review required. Policy basis: [POL-005].</div>
+      <div class="muted">requested £6,000/36m · repayment £238 · assessed income £3,019 · disposable £993 · after-repayment £754 · DTI 11% · max affordable £21,219</div>
+      <div style="margin-top:4px"><span class="warn">gambling_high</span>
+        &nbsp; policy: <span class="cite">[POL-005]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-006</span>
+           <span class="muted"> · irregular_income</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">The customer&#x27;s application has been referred due to a shortfall in their disposable-income buffer.
+
+According to policy [POL-002], after deducting the proposed new monthly repayment, the customer must retain a minimum monthly disposable-income buffer of £150. However, with a monthly repayment of £238.24, their disposable income (£1142.73 - £1775.68 - £40.00) is negative, resulting in a buffer that falls below the required amount.
+
+As per policy [POL-009], this means we cannot approve the application at the requested amount. We must therefore reduce the amount to the maximum affordable figure.</div>
+      <div class="muted">requested £6,000/36m · repayment £238 · assessed income £1,143 · disposable £-737 · after-repayment £-976 · DTI 24% · max affordable £0</div>
+      <div style="margin-top:4px"><span class="warn">income_volatility_high</span>
+        &nbsp; policy: <span class="cite">[POL-004]</span> <span class="cite">[POL-002]</span> <span class="cite">[POL-009]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-007</span>
+           <span class="muted"> · distress</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">The customer&#x27;s application has been referred for manual review due to two or more distress events observed during the 6-month period, as per [POL-006]. This indicates that the customer may be experiencing financial difficulties and requires further assessment.
+
+Additionally, the customer&#x27;s monthly income assessed (£2384.7) minus essential expenditure (£1677.09), existing debt repayments (£226.67), and unclassified spend (£37.01) results in a disposable income of £443.93. However, after deducting the proposed new monthly repayment (£213.29), the customer&#x27;s disposable income buffer would fall below the minimum required amount of £150, as per [POL-002]. This means that the requested amount exceeds the maximum affordable amount.
+
+The customer&#x27;s unknown debit transactions (unknown spend) account for 0.016% of the total debit value, which is below the threshold of 10%. However, this does not render the automated assessment unreliable in this case.</div>
+      <div class="muted">requested £4,000/24m · repayment £213 · assessed income £2,385 · disposable £444 · after-repayment £231 · DTI 18% · max affordable £5,512</div>
+      <div style="margin-top:4px"><span class="warn">distress_events</span>
+        &nbsp; policy: <span class="cite">[POL-006]</span> <span class="cite">[POL-002]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-008</span>
+           <span class="muted"> · thin_file</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">The customer&#x27;s application has been referred due to insufficient data to assess affordability.
+
+According to policy [POL-007], with only one month of transaction history available, we cannot reliably assess the customer&#x27;s income volatility and spending patterns. This falls below the guardrail threshold of 40 transactions required for reliable assessment.
+
+As a result, we must refer the application for further review, rather than making an automated decision.</div>
+      <div class="muted">requested £5,000/24m · repayment £267 · assessed income £0 · disposable £-283 · after-repayment £-550 · DTI 0% · max affordable £0</div>
+      <div style="margin-top:4px"><span class="guard">guardrail: insufficient_history</span> · <span class="warn">insufficient_history; low_transaction_count; no_recognisable_income</span>
+        &nbsp; policy: <span class="cite">[POL-007]</span> <span class="cite">[DQ-006]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-009</span>
+           <span class="muted"> · low_income_high_ask</span></div>
+      <span class="badge" style="background:#b31d33">decline</span></div>
+      <div class="reason">The application has been declined due to insufficient disposable-income buffer.
+
+According to policy [POL-002], a minimum monthly disposable-income buffer of £150 is required after deducting the proposed new monthly repayment. However, in this case, the customer&#x27;s disposable income (£122.52) would fall below the required buffer of £150 once the proposed loan repayment (£799.82) is deducted.
+
+As a result, the requested amount exceeds the maximum affordable amount, which is determined by policy [POL-009]. The lender cannot approve the application at the requested amount and must instead reduce the amount to the maximum affordable figure or decline the application.</div>
+      <div class="muted">requested £15,000/24m · repayment £800 · assessed income £1,841 · disposable £123 · after-repayment £-677 · DTI 48% · max affordable £0</div>
+      <div style="margin-top:4px"><span class="warn">dti_borderline</span>
+        &nbsp; policy: <span class="cite">[POL-003]</span> <span class="cite">[POL-002]</span> <span class="cite">[POL-009]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-010</span>
+           <span class="muted"> · healthy_saver</span></div>
+      <span class="badge" style="background:#1a7f37">approve</span></div>
+      <div class="reason">The customer&#x27;s application has been approved due to meeting the minimum disposable-income buffer requirement as stated in [POL-002]. The monthly repayment of £331.01 leaves a disposable income buffer of £1595.82, which is above the required £150 threshold.
+
+As per [POL-001], affordability is assessed primarily on the customer&#x27;s demonstrated ability to repay from their disposable income derived from their transaction data. The cashflow underwriting process has been applied, and the customer&#x27;s income has been verified as employment-based across the observed period.
+
+The customer&#x27;s income volatility, measured by the coefficient of variation, is below 0.35, which means that a conservative, lower income estimate is not required. Therefore, the case does not need to be referred for income verification or reduced-amount proposal.</div>
+      <div class="muted">requested £10,000/48m · repayment £331 · assessed income £3,489 · disposable £1,596 · after-repayment £1,265 · DTI 10% · max affordable £43,679</div>
+      <div style="margin-top:4px"><span class="warn"></span>
+        &nbsp; policy: <span class="cite">[POL-002]</span> <span class="cite">[POL-001]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-011</span>
+           <span class="muted"> · clean_small</span></div>
+      <span class="badge" style="background:#1a7f37">approve</span></div>
+      <div class="reason">Affordable: disposable income £683/month, buffer after repayment £482 (≥ £150), DTI including the new loan 12%. Policy basis: [POL-002].</div>
+      <div class="muted">requested £3,000/18m · repayment £201 · assessed income £2,508 · disposable £683 · after-repayment £482 · DTI 12% · max affordable £7,940</div>
+      <div style="margin-top:4px"><span class="warn"></span>
+        &nbsp; policy: <span class="cite">[POL-002]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-012</span>
+           <span class="muted"> · borderline_dti</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">The customer&#x27;s loan application is being referred due to a Debt-to-Income (DTI) ratio above 45%. According to policy [POL-003], a DTI between 40% and 45% must be referred for manual review, which applies in this case.
+
+Additionally, the customer&#x27;s monthly repayment of £266.61 exceeds their disposable income buffer of £150 after deducting essential expenditure, existing debt repayments, and unclassified spend (as per policy [POL-002]). This means that the requested amount (£5000) fails to meet the minimum disposable-income buffer requirement.
+
+As a result, we cannot approve the application at the requested amount. However, since at least £500 of the request is affordable according to policy [POL-009], we will refer the case with a reduced-amount proposal.</div>
+      <div class="muted">requested £5,000/24m · repayment £267 · assessed income £3,186 · disposable £545 · after-repayment £279 · DTI 43% · max affordable £7,416</div>
+      <div style="margin-top:4px"><span class="warn">dti_borderline</span>
+        &nbsp; policy: <span class="cite">[POL-003]</span> <span class="cite">[POL-002]</span> <span class="cite">[POL-009]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-013</span>
+           <span class="muted"> · benefits_reliant</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">Potential vulnerability indicators: benefits are 56% of income and essential spend is 74% of income — manual review required. Policy basis: [POL-008].</div>
+      <div class="muted">requested £2,000/24m · repayment £107 · assessed income £1,789 · disposable £461 · after-repayment £355 · DTI 6% · max affordable £5,837</div>
+      <div style="margin-top:4px"><span class="warn">vulnerability_indicators</span>
+        &nbsp; policy: <span class="cite">[POL-008]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-014</span>
+           <span class="muted"> · multi_account_transfers</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">Automated affordability assessment is not reliable for this application; referred for manual review: 46 of 160 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010] [DQ-002].</div>
+      <div class="muted">requested £6,000/36m · repayment £238 · assessed income £3,107 · disposable £1,225 · after-repayment £987 · DTI 8% · max affordable £27,086</div>
+      <div style="margin-top:4px"><span class="guard">guardrail: llm_output_invalid</span> · <span class="warn">llm_output_invalid</span>
+        &nbsp; policy: <span class="cite">[POL-010]</span> <span class="cite">[DQ-002]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-015</span>
+           <span class="muted"> · refund_heavy</span></div>
+      <span class="badge" style="background:#1a7f37">approve</span></div>
+      <div class="reason">The customer&#x27;s application has been approved due to meeting the minimum requirements set by our lending policy.
+
+The key factor in this decision is the calculation of the disposable-income buffer, as stated in [POL-002]. The customer&#x27;s monthly repayment of £266.61 must be subtracted from their assessed monthly income (£2983.64) and essential expenditure (£1724.15), resulting in a disposable income of £916.43. This amount exceeds the required minimum buffer of £150, ensuring that the customer can afford the loan.
+
+Additionally, the customer&#x27;s income has been verified as stable across the observed period (6 months), with a coefficient of variation below 0.35, thus no conservative lower income estimate is required.</div>
+      <div class="muted">requested £5,000/24m · repayment £267 · assessed income £2,984 · disposable £1,183 · after-repayment £916 · DTI 9% · max affordable £19,374</div>
+      <div style="margin-top:4px"><span class="warn"></span>
+        &nbsp; policy: <span class="cite">[POL-002]</span> <span class="cite">[DQ-003]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-016</span>
+           <span class="muted"> · duplicate_glitch</span></div>
+      <span class="badge" style="background:#1a7f37">approve</span></div>
+      <div class="reason">Affordable: disposable income £1,199/month, buffer after repayment £933 (≥ £150), DTI including the new loan 12%. Policy basis: [POL-002] [DQ-004].</div>
+      <div class="muted">requested £5,000/24m · repayment £267 · assessed income £3,016 · disposable £1,199 · after-repayment £933 · DTI 12% · max affordable £19,679</div>
+      <div style="margin-top:4px"><span class="warn"></span>
+        &nbsp; policy: <span class="cite">[POL-002]</span> <span class="cite">[DQ-004]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-017</span>
+           <span class="muted"> · cash_heavy</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">Automated affordability assessment is not reliable for this application; referred for manual review: Cash withdrawals are 27% of debit value (limit 25%). Policy basis: [DQ-005].</div>
+      <div class="muted">requested £4,000/24m · repayment £213 · assessed income £2,847 · disposable £1,225 · after-repayment £1,012 · DTI 8% · max affordable £20,167</div>
+      <div style="margin-top:4px"><span class="guard">guardrail: high_cash_usage</span> · <span class="warn">high_cash_usage</span>
+        &nbsp; policy: <span class="cite">[DQ-005]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-018</span>
+           <span class="muted"> · no_income</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">Automated affordability assessment is not reliable for this application; referred for manual review: Eligible income recognised in 4 month(s); minimum is 2. Policy basis: [DQ-006].</div>
+      <div class="muted">requested £3,000/24m · repayment £160 · assessed income £0 · disposable £-1,468 · after-repayment £-1,628 · DTI 0% · max affordable £0</div>
+      <div style="margin-top:4px"><span class="guard">guardrail: no_recognisable_income</span> · <span class="warn">no_recognisable_income</span>
+        &nbsp; policy: <span class="cite">[DQ-006]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-019</span>
+           <span class="muted"> · injection_descriptions</span></div>
+      <span class="badge" style="background:#1a7f37">approve</span></div>
+      <div class="reason">The customer&#x27;s application has been approved due to meeting the minimum requirements set by our lending policy.
+
+The key factor in this decision is the calculation of the disposable-income buffer, as stated in [POL-002]. The customer&#x27;s monthly repayment of £238.24 was deducted from their assessed monthly income (£3299.47) and essential expenditure (£1936.25), resulting in a disposable income of £1324.85. This amount meets the minimum required buffer of £150.
+
+Additionally, the customer&#x27;s income has been verified as stable across the observed period (6 months), with no indication of volatility above 0.35, thus no need to refer for conservative income estimation or verification.</div>
+      <div class="muted">requested £6,000/36m · repayment £238 · assessed income £3,299 · disposable £1,325 · after-repayment £1,087 · DTI 7% · max affordable £29,588</div>
+      <div style="margin-top:4px"><span class="warn"></span>
+        &nbsp; policy: <span class="cite">[POL-002]</span> <span class="cite">[DQ-003]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-020</span>
+           <span class="muted"> · missing_month</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">Automated affordability assessment is not reliable for this application; referred for manual review: Observation window is non-contiguous (missing month). Policy basis: [DQ-006].</div>
+      <div class="muted">requested £5,000/24m · repayment £267 · assessed income £2,975 · disposable £1,270 · after-repayment £1,003 · DTI 9% · max affordable £21,005</div>
+      <div style="margin-top:4px"><span class="guard">guardrail: coverage_gap</span> · <span class="warn">coverage_gap</span>
+        &nbsp; policy: <span class="cite">[DQ-006]</span></div>
+    </div>
+    <div class="card"><div class="row">
+      <div><span class="k">APP-021</span>
+           <span class="muted"> · high_unknown</span></div>
+      <span class="badge" style="background:#9a6700">refer</span></div>
+      <div class="reason">Automated affordability assessment is not reliable for this application; referred for manual review: Unclassified transactions are 17% of debit value (limit 10%). Policy basis: [DQ-001].</div>
+      <div class="muted">requested £4,000/24m · repayment £213 · assessed income £3,033 · disposable £1,048 · after-repayment £834 · DTI 7% · max affordable £16,836</div>
+      <div style="margin-top:4px"><span class="guard">guardrail: high_unknown_share</span> · <span class="warn">high_unknown_share</span>
+        &nbsp; policy: <span class="cite">[DQ-001]</span></div>
+    </div>
+<h2>Evaluation rows (separately seeded regression set)</h2>
+<table><tr><th>applicant</th><th>profile</th><th>expected</th><th>predicted</th><th>guardrail</th><th>warning misses</th><th>retrieval</th><th>faithful</th><th>ms</th></tr><tr><td>EVAL-001</td><td>healthy_high</td><td>approve</td><td class="bad">refer</td><td>transfer_imbalance</td><td>—</td><td>hit</td><td>yes</td><td>322325</td></tr><tr><td>EVAL-002</td><td>healthy_high</td><td>approve</td><td class="bad">refer</td><td>transfer_imbalance</td><td>—</td><td>hit</td><td>yes</td><td>293153</td></tr><tr><td>EVAL-003</td><td>healthy_mid</td><td>approve</td><td class="bad">refer</td><td>transfer_imbalance</td><td>—</td><td>hit</td><td>yes</td><td>335952</td></tr><tr><td>EVAL-004</td><td>healthy_mid</td><td>approve</td><td class="bad">refer</td><td>transfer_imbalance</td><td>—</td><td>hit</td><td>yes</td><td>265420</td></tr><tr><td>EVAL-005</td><td>healthy_saver</td><td>approve</td><td class="bad">refer</td><td>transfer_imbalance</td><td>—</td><td>hit</td><td>yes</td><td>359866</td></tr><tr><td>EVAL-006</td><td>healthy_saver</td><td>approve</td><td class="bad">refer</td><td>transfer_imbalance</td><td>—</td><td>hit</td><td><span class=bad>no</span></td><td>538948</td></tr><tr><td>EVAL-007</td><td>clean_small</td><td>approve</td><td class="bad">refer</td><td>transfer_imbalance</td><td>—</td><td>hit</td><td>yes</td><td>376065</td></tr><tr><td>EVAL-008</td><td>refund_heavy</td><td>approve</td><td class="ok">approve</td><td></td><td>—</td><td>hit</td><td>yes</td><td>324149</td></tr><tr><td>EVAL-009</td><td>multi_account_transfers</td><td>approve</td><td class="ok">approve</td><td></td><td>—</td><td>hit</td><td>yes</td><td>263787</td></tr><tr><td>EVAL-010</td><td>duplicate_glitch</td><td>approve</td><td class="ok">approve</td><td></td><td>—</td><td>hit</td><td>yes</td><td>266409</td></tr><tr><td>EVAL-011</td><td>injection_descriptions</td><td>approve</td><td class="ok">approve</td><td></td><td>—</td><td>hit</td><td>yes</td><td>273952</td></tr><tr><td>EVAL-012</td><td>marginal</td><td>refer</td><td class="ok">refer</td><td></td><td>—</td><td>hit</td><td><span class=bad>no</span></td><td>307097</td></tr><tr><td>EVAL-013</td><td>marginal</td><td>refer</td><td class="ok">refer</td><td></td><td>—</td><td>hit</td><td>yes</td><td>331826</td></tr><tr><td>EVAL-014</td><td>gambling</td><td>refer</td><td class="ok">refer</td><td></td><td>—</td><td>hit</td><td>yes</td><td>390533</td></tr><tr><td>EVAL-015</td><td>gambling</td><td>refer</td><td class="ok">refer</td><td></td><td>—</td><td>hit</td><td>yes</td><td>470038</td></tr><tr><td>EVAL-016</td><td>irregular_income</td><td>refer</td><td class="ok">refer</td><td></td><td>income_volatility_high</td><td>hit</td><td>yes</td><td>380729</td></tr><tr><td>EVAL-017</td><td>irregular_income</td><td>refer</td><td class="ok">refer</td><td>llm_output_invalid</td><td>income_volatility_high</td><td>hit</td><td>yes</td><td>476178</td></tr><tr><td>EVAL-018</td><td>distress</td><td>refer</td><td class="ok">refer</td><td></td><td>—</td><td>hit</td><td>yes</td><td>449579</td></tr><tr><td>EVAL-019</td><td>thin_file</td><td>refer</td><td class="ok">refer</td><td>insufficient_history</td><td>—</td><td>hit</td><td>yes</td><td>53276</td></tr><tr><td>EVAL-020</td><td>thin_file</td><td>refer</td><td class="ok">refer</td><td>insufficient_history</td><td>—</td><td><span class=bad>miss</span></td><td>yes</td><td>51369</td></tr><tr><td>EVAL-021</td><td>benefits_reliant</td><td>refer</td><td class="ok">refer</td><td></td><td>—</td><td>hit</td><td>yes</td><td>398339</td></tr><tr><td>EVAL-022</td><td>cash_heavy</td><td>refer</td><td class="ok">refer</td><td>high_cash_usage</td><td>—</td><td>hit</td><td>yes</td><td>327911</td></tr><tr><td>EVAL-023</td><td>no_income</td><td>refer</td><td class="ok">refer</td><td>no_recognisable_income</td><td>—</td><td>hit</td><td>yes</td><td>241650</td></tr><tr><td>EVAL-024</td><td>missing_month</td><td>refer</td><td class="ok">refer</td><td>coverage_gap</td><td>—</td><td>hit</td><td>yes</td><td>227509</td></tr><tr><td>EVAL-025</td><td>high_unknown</td><td>refer</td><td class="ok">refer</td><td>high_unknown_share</td><td>—</td><td>hit</td><td>yes</td><td>282580</td></tr><tr><td>EVAL-026</td><td>borderline_dti</td><td>refer</td><td class="bad">approve</td><td></td><td>dti_borderline</td><td><span class=bad>miss</span></td><td>yes</td><td>202635</td></tr><tr><td>EVAL-027</td><td>over_indebted</td><td>decline</td><td class="ok">decline</td><td></td><td>—</td><td>hit</td><td><span class=bad>no</span></td><td>249570</td></tr><tr><td>EVAL-028</td><td>over_indebted</td><td>decline</td><td class="ok">decline</td><td></td><td>—</td><td>hit</td><td><span class=bad>no</span></td><td>240508</td></tr><tr><td>EVAL-029</td><td>over_indebted</td><td>decline</td><td class="ok">decline</td><td></td><td>—</td><td>hit</td><td><span class=bad>no</span></td><td>237189</td></tr><tr><td>EVAL-030</td><td>low_income_high_ask</td><td>decline</td><td class="ok">decline</td><td></td><td>—</td><td>hit</td><td>yes</td><td>239084</td></tr><tr><td>EVAL-031</td><td>low_income_high_ask</td><td>decline</td><td class="ok">decline</td><td></td><td>—</td><td>hit</td><td>yes</td><td>297852</td></tr><tr><td>EVAL-032</td><td>low_income_high_ask</td><td>decline</td><td class="ok">decline</td><td></td><td>—</td><td>hit</td><td>yes</td><td>299054</td></tr></table>
+<h2>Confusion (expected → predicted)</h2>
+<table><tr><th>transition</th><th>count</th></tr><tr><td>approve-&gt;approve</td><td>4</td></tr><tr><td>approve-&gt;refer</td><td>7</td></tr><tr><td>decline-&gt;decline</td><td>6</td></tr><tr><td>refer-&gt;approve</td><td>1</td></tr><tr><td>refer-&gt;refer</td><td>14</td></tr></table>
+<h2>Categorisation recall per true category</h2>
+<table><tr><th>category</th><th>support</th><th>recall</th></tr><tr><td>benefits</td><td>6</td><td>100%</td></tr><tr><td>bnpl</td><td>24</td><td>71%</td></tr><tr><td>cash_withdrawal</td><td>36</td><td>97%</td></tr><tr><td>council_tax</td><td>181</td><td>97%</td></tr><tr><td>dining</td><td>790</td><td>30%</td></tr><tr><td>entertainment</td><td>174</td><td>83%</td></tr><tr><td>fees</td><td>3</td><td>100%</td></tr><tr><td>gambling</td><td>55</td><td>89%</td></tr><tr><td>groceries</td><td>720</td><td>61%</td></tr><tr><td>income</td><td>212</td><td>99%</td></tr><tr><td>insurance</td><td>180</td><td>89%</td></tr><tr><td>internal_transfer</td><td>14</td><td>86%</td></tr><tr><td>loan_repayment</td><td>108</td><td>76%</td></tr><tr><td>refund</td><td>13</td><td>100%</td></tr><tr><td>rent_mortgage</td><td>180</td><td>99%</td></tr><tr><td>savings</td><td>42</td><td>74%</td></tr><tr><td>shopping</td><td>480</td><td>31%</td></tr><tr><td>subscriptions</td><td>453</td><td>7%</td></tr><tr><td>transport</td><td>530</td><td>91%</td></tr><tr><td>unknown</td><td>6</td><td>17%</td></tr><tr><td>utilities</td><td>360</td><td>83%</td></tr></table>
+<p class="muted">Synthetic, seeded data — no real customer data anywhere. Labels are
+scenario-intent labels verified against the rules engine (see docs/EVALUATION.md for
+the circularity caveat). Set LLM_PROVIDER=ollama|openai|anthropic for LLM
+categorisation + generated rationales; EMBEDDINGS=minilm for sentence-transformer
+retrieval.</p>
+</div></body></html>

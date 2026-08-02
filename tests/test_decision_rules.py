@@ -215,6 +215,7 @@ def test_transfer_imbalance_guardrail():
     leave grossly one-sided transfer legs -> refer, never approve."""
     rr = run(
         make_metrics(
+            n_accounts=2,
             n_internal_transfer_txns=120,
             internal_transfer_net=-13000.0,
             internal_transfer_gross=13000.0,
@@ -223,6 +224,41 @@ def test_transfer_imbalance_guardrail():
     assert rr.outcome == Outcome.refer
     assert WarningCode.transfer_imbalance in codes(rr)
     assert "DQ-007" in rr.decisive_policy_ids
+
+
+def test_single_account_one_sided_transfers_do_not_trigger_imbalance():
+    """Regression (live-LLM run 2026-08-01): the leg-balance test is unanswerable on
+    a single connected account — a transfer to an external savings account has no
+    visible counterpart — and firing it referred 7 of 11 approve-labelled applicants
+    (false-positive referral rate 0.636). Now gated on n_accounts >= 2."""
+    rr = run(
+        make_metrics(
+            n_accounts=1,
+            n_internal_transfer_txns=6,
+            internal_transfer_net=-1800.0,
+            internal_transfer_gross=1800.0,
+        )
+    )
+    assert rr.outcome == Outcome.approve
+    assert WarningCode.transfer_imbalance not in codes(rr)
+
+
+def test_single_account_hostile_pattern_still_referred_by_essential_spend():
+    """The gate must not open an approval route: the sign-valid attack that hides
+    every debit behind `internal_transfer` leaves zero essential spend, and the
+    second DQ-007 check still catches it on a single-account applicant."""
+    rr = run(
+        make_metrics(
+            n_accounts=1,
+            n_internal_transfer_txns=120,
+            internal_transfer_net=-13000.0,
+            internal_transfer_gross=13000.0,
+            essential_spend=0.0,
+            essential_share=0.0,
+        )
+    )
+    assert rr.outcome == Outcome.refer
+    assert WarningCode.no_essential_spend in codes(rr)
 
 
 def test_balanced_transfers_do_not_trigger_imbalance():
