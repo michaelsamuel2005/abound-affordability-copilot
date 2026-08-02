@@ -129,6 +129,36 @@ def test_rationale_numbers_tolerate_formatting():
     assert ok, problems
 
 
+def test_provider_outage_rationale_is_grounded(retriever):
+    """Regression (provider-outage run 2026-08-02): when every categorisation batch
+    fails, the llm_output_invalid guardrail message quotes the fallback counter
+    ("144 of 143 categorisations failed ..."), which is a categorisation diagnostic
+    rather than an affordability metric. The template rationale therefore failed the
+    system's own grounding check. Categorisation counters are now grounded facts."""
+    from fakes import FakeLLM as _FakeLLM  # noqa: PLC0415
+
+    txns, _ = _forty_txn_payload()
+    applicant = {"applicant_id": "OUT-001", "requested_amount": 4000.0, "term_months": 24}
+    dead = _FakeLLM([ConnectionError("provider down")] * 12)
+    d, diag = assess(applicant, txns, retriever, llm=dead)
+
+    assert d.outcome == Outcome.refer
+    assert diag["rationale_source"] == "template"
+    facts = __import__("agent").build_facts(
+        __import__("schemas").AffordabilityMetrics(**diag["metrics"]),
+        d.requested_amount,
+        d.term_months,
+        d.monthly_repayment,
+        d.disposable_after_repayment,
+        d.dti_including_new,
+        d.max_affordable_amount,
+        categorize_meta=diag["categorize_meta"],
+    )
+    allowed = set(diag["retrieved_ids"]) | set(diag["decisive_ids"])
+    ok, problems = validate_rationale(d.rationale, facts, allowed, thresholds())
+    assert ok, problems
+
+
 def test_negative_fact_quoted_with_its_sign_is_grounded():
     """Regression (live-LLM run 2026-08-01): an over-indebted applicant's template
     rationale quotes a NEGATIVE post-repayment buffer as "£-458". The number

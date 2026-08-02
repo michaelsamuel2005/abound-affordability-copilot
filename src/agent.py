@@ -173,6 +173,22 @@ def _template_rationale(reasons: list[str], pids: list[str]) -> str:
     return f"{' '.join(reasons)} Policy basis: {cite}."
 
 
+def categorize_facts(meta: dict | None) -> dict:
+    """Numeric categorisation diagnostics, namespaced so they cannot collide with
+    metric names. Pipeline guardrail messages quote these counters verbatim
+    ("144 of 143 categorisations failed structured-output validation"), and those
+    messages are spliced into the template rationale — so they must be part of the
+    grounded fact set or the template fails the system's own check. Found by the
+    provider-outage run of 2026-08-02."""
+    if not meta:
+        return {}
+    return {
+        f"categorize_{k}": v
+        for k, v in meta.items()
+        if isinstance(v, int | float) and not isinstance(v, bool)
+    }
+
+
 def build_facts(
     m,
     requested: float,
@@ -181,6 +197,7 @@ def build_facts(
     disposable_after: float,
     dti_new: float,
     max_afford: float,
+    categorize_meta: dict | None = None,
 ) -> dict:
     """The ONLY numbers the rationale (LLM or template) may use — also the
     reference set the faithfulness checker validates against.
@@ -210,6 +227,7 @@ def build_facts(
             "max_affordable_amount": max_afford,
         }
     )
+    facts.update(categorize_facts(categorize_meta))
     return facts
 
 
@@ -319,7 +337,16 @@ def assess(
     retrieval_hits = [pid in retrieved_ids for pid in rr.decisive_policy_ids]
 
     warnings = list(rr.warnings)
-    facts = build_facts(m, requested, term, repayment, disposable_after, dti_new, max_afford)
+    facts = build_facts(
+        m,
+        requested,
+        term,
+        repayment,
+        disposable_after,
+        dti_new,
+        max_afford,
+        categorize_meta=cat_meta,
+    )
 
     rationale = _template_rationale(rr.reasons, rr.decisive_policy_ids)
     rationale_source = "template"

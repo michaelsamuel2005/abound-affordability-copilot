@@ -1,8 +1,8 @@
 [
   {
     "applicant_id": "APP-001",
-    "outcome": "approve",
-    "confidence": 0.9,
+    "outcome": "refer",
+    "confidence": 0.5,
     "requested_amount": 8000.0,
     "term_months": 36,
     "monthly_repayment": 317.66,
@@ -10,28 +10,44 @@
     "disposable_after_repayment": 1895.73,
     "dti_including_new": 0.074,
     "reasons": [
-      "Affordable: disposable income \u00a32,213/month, buffer after repayment \u00a31,896 (\u2265 \u00a3150), DTI including the new loan 7%."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 145 of 145 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Affordable: disposable income \u00a32,213/month, buffer after repayment \u00a31,896 (\u2265 \u00a3150), DTI including the new loan 7%. Policy basis: [POL-002].",
-    "warnings": [],
-    "guardrail": null,
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 145 of 145 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
+    "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "145 of 145 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
+      }
+    ],
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-002",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Minimum disposable-income buffer",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.4544
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
-    "review_priority": "standard",
+    "review_priority": "high",
     "versions": {
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "healthy_high",
@@ -222,17 +238,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.24,
-      "categorize_ms": 1.07,
-      "affordability_ms": 0.37,
-      "retrieve_ms": 1.77,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.74,
+      "categorize_ms": 1625.78,
+      "affordability_ms": 2.34,
+      "retrieve_ms": 10.37,
+      "decide_ms": 0.07,
+      "rationale_ms": 1531.32
     }
   },
   {
     "applicant_id": "APP-002",
-    "outcome": "approve",
-    "confidence": 0.9,
+    "outcome": "refer",
+    "confidence": 0.5,
     "requested_amount": 5000.0,
     "term_months": 24,
     "monthly_repayment": 266.61,
@@ -240,28 +257,44 @@
     "disposable_after_repayment": 643.53,
     "dti_including_new": 0.145,
     "reasons": [
-      "Affordable: disposable income \u00a3910/month, buffer after repayment \u00a3644 (\u2265 \u00a3150), DTI including the new loan 14%."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 152 of 152 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Affordable: disposable income \u00a3910/month, buffer after repayment \u00a3644 (\u2265 \u00a3150), DTI including the new loan 14%. Policy basis: [POL-002].",
-    "warnings": [],
-    "guardrail": null,
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 152 of 152 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
+    "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "152 of 152 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
+      }
+    ],
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-002",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Minimum disposable-income buffer",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.4544
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
-    "review_priority": "standard",
+    "review_priority": "high",
     "versions": {
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "healthy_mid",
@@ -461,17 +494,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.22,
-      "categorize_ms": 1.03,
-      "affordability_ms": 0.35,
-      "retrieve_ms": 0.25,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.08,
+      "categorize_ms": 1541.29,
+      "affordability_ms": 1.42,
+      "retrieve_ms": 1.22,
+      "decide_ms": 0.06,
+      "rationale_ms": 1528.32
     }
   },
   {
     "applicant_id": "APP-003",
     "outcome": "refer",
-    "confidence": 0.65,
+    "confidence": 0.5,
     "requested_amount": 8000.0,
     "term_months": 24,
     "monthly_repayment": 426.57,
@@ -479,33 +513,35 @@
     "disposable_after_repayment": 148.27,
     "dti_including_new": 0.269,
     "reasons": [
-      "At \u00a38,000 the post-repayment buffer falls to \u00a3148 (< \u00a3150); up to about \u00a37,968 is affordable \u2014 refer to offer a reduced amount."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 149 of 149 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "At \u00a38,000 the post-repayment buffer falls to \u00a3148 (< \u00a3150); up to about \u00a37,968 is affordable \u2014 refer to offer a reduced amount. Policy basis: [POL-002] [POL-009].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 149 of 149 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
     "warnings": [
       {
-        "code": "buffer_breach_reduced_offer",
-        "severity": "review",
-        "message": "Buffer after repayment \u00a3148 < \u00a3150; reduced amount viable."
-      }
-    ],
-    "guardrail": null,
-    "policy_citations": [
-      {
-        "policy_id": "POL-002",
-        "doc_id": "lending_policy",
-        "title": "Minimum disposable-income buffer",
-        "version": "2026-07.2",
-        "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.5374
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
       },
       {
-        "policy_id": "POL-009",
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "149 of 149 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
+      }
+    ],
+    "guardrail": "llm_unavailable",
+    "policy_citations": [
+      {
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Maximum affordable amount",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "The maximum loan is the largest amount whose monthly repayment still leaves the customer at or above the \u00a3150 disposable-income buffer (POL-002). Never lend above this figure even where a larger amount is requested. Where the requested amount fails the buffer test but at least \u00a3500 and at least half of the request is affordable, the case may be referred with a reduced-amount pr",
-        "score": 0.399
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
@@ -514,7 +550,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "marginal",
@@ -715,17 +751,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.22,
-      "categorize_ms": 1.01,
-      "affordability_ms": 0.33,
-      "retrieve_ms": 0.22,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.63,
+      "categorize_ms": 1537.97,
+      "affordability_ms": 1.1,
+      "retrieve_ms": 1.45,
+      "decide_ms": 0.06,
+      "rationale_ms": 1531.07
     }
   },
   {
     "applicant_id": "APP-004",
-    "outcome": "decline",
-    "confidence": 0.9,
+    "outcome": "refer",
+    "confidence": 0.5,
     "requested_amount": 7000.0,
     "term_months": 24,
     "monthly_repayment": 373.25,
@@ -733,25 +770,35 @@
     "disposable_after_repayment": -438.85,
     "dti_including_new": 0.514,
     "reasons": [
-      "Debt-to-income including the new loan is 51%, above the 45% limit."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 155 of 155 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Debt-to-income including the new loan is 51%, above the 45% limit. Policy basis: [POL-003].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 155 of 155 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
     "warnings": [
       {
-        "code": "dti_borderline",
-        "severity": "review",
-        "message": "DTI including the new loan is 51%."
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "155 of 155 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": null,
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-003",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Debt-to-income (DTI) limit",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "Total monthly debt repayments **including the proposed new loan** must not exceed **45% of assessed monthly income**. A DTI between 40% and 45% must be **referred** for manual review; a DTI above 45% must be **declined**.",
-        "score": 0.2928
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
@@ -760,7 +807,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "over_indebted",
@@ -969,17 +1016,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.23,
-      "categorize_ms": 1.13,
-      "affordability_ms": 0.34,
-      "retrieve_ms": 0.23,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.11,
+      "categorize_ms": 1536.06,
+      "affordability_ms": 1.41,
+      "retrieve_ms": 1.52,
+      "decide_ms": 0.04,
+      "rationale_ms": 1530.35
     }
   },
   {
     "applicant_id": "APP-005",
     "outcome": "refer",
-    "confidence": 0.65,
+    "confidence": 0.5,
     "requested_amount": 6000.0,
     "term_months": 36,
     "monthly_repayment": 238.24,
@@ -987,25 +1035,35 @@
     "disposable_after_repayment": 862.09,
     "dti_including_new": 0.112,
     "reasons": [
-      "Gambling spend is 16% of assessed income (limit 10%); manual review required."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 178 of 178 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Gambling spend is 16% of assessed income (limit 10%); manual review required. Policy basis: [POL-005].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 178 of 178 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
     "warnings": [
       {
-        "code": "gambling_high",
-        "severity": "review",
-        "message": "Gambling is 16% of assessed income."
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "178 of 178 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": null,
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-005",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Gambling and potentially harmful spend",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "Where gambling transactions exceed **10% of assessed monthly income**, the application must be **referred** for manual review. Sustained, high-proportion gambling is an indicator of potential harm and may justify a **decline**; the review must consider affordability and customer-harm obligations together.",
-        "score": 0.2606
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
@@ -1014,7 +1072,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "gambling",
@@ -1248,17 +1306,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.26,
-      "categorize_ms": 1.14,
-      "affordability_ms": 0.39,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.09,
+      "categorize_ms": 1530.41,
+      "affordability_ms": 1.35,
+      "retrieve_ms": 2.17,
+      "decide_ms": 0.06,
+      "rationale_ms": 1527.33
     }
   },
   {
     "applicant_id": "APP-006",
     "outcome": "refer",
-    "confidence": 0.65,
+    "confidence": 0.5,
     "requested_amount": 6000.0,
     "term_months": 36,
     "monthly_repayment": 238.24,
@@ -1266,25 +1325,35 @@
     "disposable_after_repayment": -940.38,
     "dti_including_new": 0.313,
     "reasons": [
-      "Income is volatile (cv 0.41 > 0.35); assessed conservatively at \u00a31,143/month \u2014 refer for verification."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 167 of 167 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Income is volatile (cv 0.41 > 0.35); assessed conservatively at \u00a31,143/month \u2014 refer for verification. Policy basis: [POL-004].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 167 of 167 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
     "warnings": [
       {
-        "code": "income_volatility_high",
-        "severity": "review",
-        "message": "Income volatility cv=0.41."
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "167 of 167 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": null,
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-004",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Income verification and stability",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "Income must be evidenced by inflows recognisable as employment, self-employment or benefits income across the observed period. Where income is volatile (coefficient of variation above **0.35**), affordability must be assessed against a **conservative, lower income estimate** \u2014 no higher than the worse of the weakest observed month and the mean reduced in proportion to the volat",
-        "score": 0.2192
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
@@ -1293,7 +1362,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "irregular_income",
@@ -1514,17 +1583,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.23,
-      "categorize_ms": 1.07,
-      "affordability_ms": 0.35,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.99,
+      "categorize_ms": 1536.17,
+      "affordability_ms": 1.62,
+      "retrieve_ms": 1.84,
+      "decide_ms": 0.05,
+      "rationale_ms": 1522.19
     }
   },
   {
     "applicant_id": "APP-007",
     "outcome": "refer",
-    "confidence": 0.65,
+    "confidence": 0.5,
     "requested_amount": 4000.0,
     "term_months": 24,
     "monthly_repayment": 213.29,
@@ -1532,25 +1602,35 @@
     "disposable_after_repayment": 228.29,
     "dti_including_new": 0.211,
     "reasons": [
-      "3 distress events (overdraft/returned-DD fees) observed; manual review required."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 164 of 164 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "3 distress events (overdraft/returned-DD fees) observed; manual review required. Policy basis: [POL-006].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 164 of 164 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
     "warnings": [
       {
-        "code": "distress_events",
-        "severity": "review",
-        "message": "3 financial-distress events observed."
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "164 of 164 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": null,
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-006",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Signs of financial distress",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "Overdraft fees, returned direct debits, unpaid-item fees and payday-loan activity are indicators of financial distress. **Two or more** distress events in the observed period require a **referral** for manual review.",
-        "score": 0.3819
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
@@ -1559,7 +1639,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "distress",
@@ -1779,11 +1859,12 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.23,
-      "categorize_ms": 1.07,
-      "affordability_ms": 0.34,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.7,
+      "categorize_ms": 1548.56,
+      "affordability_ms": 1.57,
+      "retrieve_ms": 1.32,
+      "decide_ms": 0.04,
+      "rationale_ms": 1532.47
     }
   },
   {
@@ -1797,10 +1878,20 @@
     "disposable_after_repayment": -569.86,
     "dti_including_new": 0.0,
     "reasons": [
-      "Automated affordability assessment is not reliable for this application; referred for manual review: Only 1 month(s) of history; minimum is 3.; Only 12 transactions; minimum is 40.; Eligible income recognised in 0 month(s); minimum is 2."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 12 of 12 categorisations failed structured-output validation and used the rule fallback.; Only 1 month(s) of history; minimum is 3.; Only 12 transactions; minimum is 40.; Eligible income recognised in 0 month(s); minimum is 2."
     ],
-    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: Only 1 month(s) of history; minimum is 3.; Only 12 transactions; minimum is 40.; Eligible income recognised in 0 month(s); minimum is 2. Policy basis: [POL-007] [DQ-006].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 12 of 12 categorisations failed structured-output validation and used the rule fallback.; Only 1 month(s) of history; minimum is 3.; Only 12 transactions; minimum is 40.; Eligible income recognised in 0 month(s); minimum is 2. Policy basis: [POL-010] [POL-007] [DQ-006].",
     "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "12 of 12 categorisations failed structured-output validation and used the rule fallback."
+      },
       {
         "code": "insufficient_history",
         "severity": "guardrail",
@@ -1815,10 +1906,23 @@
         "code": "no_recognisable_income",
         "severity": "guardrail",
         "message": "Eligible income recognised in 0 month(s); minimum is 2."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": "insufficient_history",
+    "guardrail": "llm_unavailable",
     "policy_citations": [
+      {
+        "policy_id": "POL-010",
+        "doc_id": "lending_policy",
+        "title": "Explainability and fair lending",
+        "version": "2026-07.2",
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
+      },
       {
         "policy_id": "POL-007",
         "doc_id": "lending_policy",
@@ -1842,7 +1946,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "thin_file",
@@ -1902,17 +2006,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.02,
-      "categorize_ms": 0.09,
-      "affordability_ms": 0.05,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.17,
+      "categorize_ms": 1530.89,
+      "affordability_ms": 0.29,
+      "retrieve_ms": 1.92,
+      "decide_ms": 0.17,
+      "rationale_ms": 1529.97
     }
   },
   {
     "applicant_id": "APP-009",
-    "outcome": "decline",
-    "confidence": 0.9,
+    "outcome": "refer",
+    "confidence": 0.5,
     "requested_amount": 15000.0,
     "term_months": 24,
     "monthly_repayment": 799.82,
@@ -1920,25 +2025,35 @@
     "disposable_after_repayment": -556.71,
     "dti_including_new": 0.489,
     "reasons": [
-      "Debt-to-income including the new loan is 49%, above the 45% limit."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 146 of 146 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Debt-to-income including the new loan is 49%, above the 45% limit. Policy basis: [POL-003].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 146 of 146 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
     "warnings": [
       {
-        "code": "dti_borderline",
-        "severity": "review",
-        "message": "DTI including the new loan is 49%."
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "146 of 146 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": null,
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-003",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Debt-to-income (DTI) limit",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "Total monthly debt repayments **including the proposed new loan** must not exceed **45% of assessed monthly income**. A DTI between 40% and 45% must be **referred** for manual review; a DTI above 45% must be **declined**.",
-        "score": 0.2456
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
@@ -1947,7 +2062,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "low_income_high_ask",
@@ -2147,17 +2262,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.2,
-      "categorize_ms": 1.04,
-      "affordability_ms": 0.32,
-      "retrieve_ms": 0.23,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.25,
+      "categorize_ms": 1538.25,
+      "affordability_ms": 1.3,
+      "retrieve_ms": 8.63,
+      "decide_ms": 0.33,
+      "rationale_ms": 1527.03
     }
   },
   {
     "applicant_id": "APP-010",
-    "outcome": "approve",
-    "confidence": 0.9,
+    "outcome": "refer",
+    "confidence": 0.5,
     "requested_amount": 10000.0,
     "term_months": 48,
     "monthly_repayment": 331.01,
@@ -2165,28 +2281,44 @@
     "disposable_after_repayment": 1155.72,
     "dti_including_new": 0.095,
     "reasons": [
-      "Affordable: disposable income \u00a31,487/month, buffer after repayment \u00a31,156 (\u2265 \u00a3150), DTI including the new loan 10%."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 155 of 155 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Affordable: disposable income \u00a31,487/month, buffer after repayment \u00a31,156 (\u2265 \u00a3150), DTI including the new loan 10%. Policy basis: [POL-002].",
-    "warnings": [],
-    "guardrail": null,
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 155 of 155 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
+    "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "155 of 155 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
+      }
+    ],
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-002",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Minimum disposable-income buffer",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.4544
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
-    "review_priority": "standard",
+    "review_priority": "high",
     "versions": {
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "healthy_saver",
@@ -2387,17 +2519,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.23,
-      "categorize_ms": 1.08,
-      "affordability_ms": 0.34,
-      "retrieve_ms": 0.3,
-      "decide_ms": 0.01
+      "validate_input_ms": 2.44,
+      "categorize_ms": 1532.47,
+      "affordability_ms": 1.07,
+      "retrieve_ms": 1.25,
+      "decide_ms": 0.06,
+      "rationale_ms": 1524.51
     }
   },
   {
     "applicant_id": "APP-011",
-    "outcome": "approve",
-    "confidence": 0.9,
+    "outcome": "refer",
+    "confidence": 0.5,
     "requested_amount": 3000.0,
     "term_months": 18,
     "monthly_repayment": 201.43,
@@ -2405,28 +2538,44 @@
     "disposable_after_repayment": 441.24,
     "dti_including_new": 0.128,
     "reasons": [
-      "Affordable: disposable income \u00a3643/month, buffer after repayment \u00a3441 (\u2265 \u00a3150), DTI including the new loan 13%."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 158 of 158 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Affordable: disposable income \u00a3643/month, buffer after repayment \u00a3441 (\u2265 \u00a3150), DTI including the new loan 13%. Policy basis: [POL-002].",
-    "warnings": [],
-    "guardrail": null,
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 158 of 158 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
+    "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "158 of 158 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
+      }
+    ],
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-002",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Minimum disposable-income buffer",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.4544
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
-    "review_priority": "standard",
+    "review_priority": "high",
     "versions": {
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "clean_small",
@@ -2632,17 +2781,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.23,
-      "categorize_ms": 1.05,
-      "affordability_ms": 0.33,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.09,
+      "categorize_ms": 1531.03,
+      "affordability_ms": 2.69,
+      "retrieve_ms": 10.02,
+      "decide_ms": 0.11,
+      "rationale_ms": 1528.29
     }
   },
   {
     "applicant_id": "APP-012",
     "outcome": "refer",
-    "confidence": 0.65,
+    "confidence": 0.5,
     "requested_amount": 5000.0,
     "term_months": 24,
     "monthly_repayment": 266.61,
@@ -2650,25 +2800,35 @@
     "disposable_after_repayment": 371.67,
     "dti_including_new": 0.429,
     "reasons": [
-      "Debt-to-income including the new loan is 43%, inside the 40%\u201345% manual-review band."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 148 of 148 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Debt-to-income including the new loan is 43%, inside the 40%\u201345% manual-review band. Policy basis: [POL-003].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 148 of 148 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
     "warnings": [
       {
-        "code": "dti_borderline",
-        "severity": "review",
-        "message": "DTI including the new loan is 43% (40%\u201345% band)."
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "148 of 148 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": null,
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-003",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Debt-to-income (DTI) limit",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "Total monthly debt repayments **including the proposed new loan** must not exceed **45% of assessed monthly income**. A DTI between 40% and 45% must be **referred** for manual review; a DTI above 45% must be **declined**.",
-        "score": 0.3797
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
@@ -2677,7 +2837,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "borderline_dti",
@@ -2877,17 +3037,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.21,
-      "categorize_ms": 1.0,
-      "affordability_ms": 0.31,
-      "retrieve_ms": 0.2,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.22,
+      "categorize_ms": 1533.36,
+      "affordability_ms": 1.84,
+      "retrieve_ms": 2.65,
+      "decide_ms": 0.07,
+      "rationale_ms": 1524.96
     }
   },
   {
     "applicant_id": "APP-013",
     "outcome": "refer",
-    "confidence": 0.65,
+    "confidence": 0.5,
     "requested_amount": 2000.0,
     "term_months": 24,
     "monthly_repayment": 106.64,
@@ -2895,25 +3056,35 @@
     "disposable_after_repayment": 374.77,
     "dti_including_new": 0.06,
     "reasons": [
-      "Potential vulnerability indicators: benefits are 56% of income and essential spend is 72% of income \u2014 manual review required."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 146 of 146 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Potential vulnerability indicators: benefits are 56% of income and essential spend is 72% of income \u2014 manual review required. Policy basis: [POL-008].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 146 of 146 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010].",
     "warnings": [
       {
-        "code": "vulnerability_indicators",
-        "severity": "review",
-        "message": "Benefits are 56% of income and essentials 72% of income."
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "146 of 146 categorisations failed structured-output validation and used the rule fallback."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": null,
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-008",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Vulnerable customers",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "Indicators of potential vulnerability \u2014 for example, benefits making up more than half of income combined with essential spending above 60% of income \u2014 require **manual review** and consideration of forbearance and support options. Do not auto-approve where vulnerability indicators are present.",
-        "score": 0.1876
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       }
     ],
     "human_review_required": true,
@@ -2922,7 +3093,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "benefits_reliant",
@@ -3120,17 +3291,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.2,
-      "categorize_ms": 0.96,
-      "affordability_ms": 0.3,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.59,
+      "categorize_ms": 1527.55,
+      "affordability_ms": 1.12,
+      "retrieve_ms": 2.38,
+      "decide_ms": 0.05,
+      "rationale_ms": 1525.38
     }
   },
   {
     "applicant_id": "APP-014",
-    "outcome": "approve",
-    "confidence": 0.9,
+    "outcome": "refer",
+    "confidence": 0.5,
     "requested_amount": 6000.0,
     "term_months": 36,
     "monthly_repayment": 238.24,
@@ -3138,25 +3310,40 @@
     "disposable_after_repayment": 1012.1,
     "dti_including_new": 0.077,
     "reasons": [
-      "Affordable: disposable income \u00a31,250/month, buffer after repayment \u00a31,012 (\u2265 \u00a3150), DTI including the new loan 8%."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 160 of 160 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Affordable: disposable income \u00a31,250/month, buffer after repayment \u00a31,012 (\u2265 \u00a3150), DTI including the new loan 8%. Policy basis: [POL-002] [DQ-002].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 160 of 160 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010] [DQ-002].",
     "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "160 of 160 categorisations failed structured-output validation and used the rule fallback."
+      },
       {
         "code": "internal_transfers_netted",
         "severity": "info",
         "message": "14 own-account transfer leg(s) excluded from income and expenditure."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": null,
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-002",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Minimum disposable-income buffer",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.3146
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       },
       {
         "policy_id": "DQ-002",
@@ -3168,12 +3355,12 @@
       }
     ],
     "human_review_required": true,
-    "review_priority": "standard",
+    "review_priority": "high",
     "versions": {
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "multi_account_transfers",
@@ -3387,17 +3574,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.22,
-      "categorize_ms": 1.03,
-      "affordability_ms": 0.34,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.9,
+      "categorize_ms": 1527.18,
+      "affordability_ms": 1.24,
+      "retrieve_ms": 1.27,
+      "decide_ms": 0.06,
+      "rationale_ms": 1521.7
     }
   },
   {
     "applicant_id": "APP-015",
-    "outcome": "approve",
-    "confidence": 0.9,
+    "outcome": "refer",
+    "confidence": 0.5,
     "requested_amount": 5000.0,
     "term_months": 24,
     "monthly_repayment": 266.61,
@@ -3405,25 +3593,40 @@
     "disposable_after_repayment": 922.9,
     "dti_including_new": 0.089,
     "reasons": [
-      "Affordable: disposable income \u00a31,190/month, buffer after repayment \u00a3923 (\u2265 \u00a3150), DTI including the new loan 9%."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 158 of 158 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Affordable: disposable income \u00a31,190/month, buffer after repayment \u00a3923 (\u2265 \u00a3150), DTI including the new loan 9%. Policy basis: [POL-002] [DQ-003].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 158 of 158 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010] [DQ-003].",
     "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "158 of 158 categorisations failed structured-output validation and used the rule fallback."
+      },
       {
         "code": "refunds_netted",
         "severity": "info",
         "message": "12 refund(s) netted against original spend."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": null,
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-002",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Minimum disposable-income buffer",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.3463
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       },
       {
         "policy_id": "DQ-003",
@@ -3435,12 +3638,12 @@
       }
     ],
     "human_review_required": true,
-    "review_priority": "standard",
+    "review_priority": "high",
     "versions": {
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "refund_heavy",
@@ -3664,17 +3867,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.22,
-      "categorize_ms": 1.03,
-      "affordability_ms": 0.75,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.98,
+      "categorize_ms": 1530.49,
+      "affordability_ms": 2.84,
+      "retrieve_ms": 3.04,
+      "decide_ms": 0.1,
+      "rationale_ms": 1525.85
     }
   },
   {
     "applicant_id": "APP-016",
-    "outcome": "approve",
-    "confidence": 0.9,
+    "outcome": "refer",
+    "confidence": 0.5,
     "requested_amount": 5000.0,
     "term_months": 24,
     "monthly_repayment": 266.61,
@@ -3682,25 +3886,40 @@
     "disposable_after_repayment": 874.11,
     "dti_including_new": 0.122,
     "reasons": [
-      "Affordable: disposable income \u00a31,141/month, buffer after repayment \u00a3874 (\u2265 \u00a3150), DTI including the new loan 12%."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 152 of 150 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Affordable: disposable income \u00a31,141/month, buffer after repayment \u00a3874 (\u2265 \u00a3150), DTI including the new loan 12%. Policy basis: [POL-002] [DQ-004].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 152 of 150 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010] [DQ-004].",
     "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "152 of 150 categorisations failed structured-output validation and used the rule fallback."
+      },
       {
         "code": "duplicates_removed",
         "severity": "info",
         "message": "2 duplicate posting(s) removed before calculation."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": null,
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-002",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Minimum disposable-income buffer",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.3241
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       },
       {
         "policy_id": "DQ-004",
@@ -3712,12 +3931,12 @@
       }
     ],
     "human_review_required": true,
-    "review_priority": "standard",
+    "review_priority": "high",
     "versions": {
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "duplicate_glitch",
@@ -3925,11 +4144,12 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.21,
-      "categorize_ms": 1.02,
-      "affordability_ms": 0.32,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.78,
+      "categorize_ms": 1534.79,
+      "affordability_ms": 1.07,
+      "retrieve_ms": 1.79,
+      "decide_ms": 0.11,
+      "rationale_ms": 1521.23
     }
   },
   {
@@ -3943,18 +4163,41 @@
     "disposable_after_repayment": 1089.81,
     "dti_including_new": 0.075,
     "reasons": [
-      "Automated affordability assessment is not reliable for this application; referred for manual review: Cash withdrawals are 27% of debit value (limit 25%)."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 183 of 183 categorisations failed structured-output validation and used the rule fallback.; Cash withdrawals are 27% of debit value (limit 25%)."
     ],
-    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: Cash withdrawals are 27% of debit value (limit 25%). Policy basis: [DQ-005].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 183 of 183 categorisations failed structured-output validation and used the rule fallback.; Cash withdrawals are 27% of debit value (limit 25%). Policy basis: [POL-010] [DQ-005].",
     "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "183 of 183 categorisations failed structured-output validation and used the rule fallback."
+      },
       {
         "code": "high_cash_usage",
         "severity": "guardrail",
         "message": "Cash withdrawals are 27% of debit value (limit 25%)."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": "high_cash_usage",
+    "guardrail": "llm_unavailable",
     "policy_citations": [
+      {
+        "policy_id": "POL-010",
+        "doc_id": "lending_policy",
+        "title": "Explainability and fair lending",
+        "version": "2026-07.2",
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
+      },
       {
         "policy_id": "DQ-005",
         "doc_id": "data_quality_policy",
@@ -3970,7 +4213,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "cash_heavy",
@@ -4207,11 +4450,12 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.25,
-      "categorize_ms": 1.14,
-      "affordability_ms": 0.38,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 2.28,
+      "categorize_ms": 1534.99,
+      "affordability_ms": 1.6,
+      "retrieve_ms": 1.89,
+      "decide_ms": 0.07,
+      "rationale_ms": 1523.23
     }
   },
   {
@@ -4225,18 +4469,41 @@
     "disposable_after_repayment": -1587.17,
     "dti_including_new": 0.0,
     "reasons": [
-      "Automated affordability assessment is not reliable for this application; referred for manual review: Eligible income recognised in 0 month(s); minimum is 2."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 143 of 143 categorisations failed structured-output validation and used the rule fallback.; Eligible income recognised in 0 month(s); minimum is 2."
     ],
-    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: Eligible income recognised in 0 month(s); minimum is 2. Policy basis: [DQ-006].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 143 of 143 categorisations failed structured-output validation and used the rule fallback.; Eligible income recognised in 0 month(s); minimum is 2. Policy basis: [POL-010] [DQ-006].",
     "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "143 of 143 categorisations failed structured-output validation and used the rule fallback."
+      },
       {
         "code": "no_recognisable_income",
         "severity": "guardrail",
         "message": "Eligible income recognised in 0 month(s); minimum is 2."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": "no_recognisable_income",
+    "guardrail": "llm_unavailable",
     "policy_citations": [
+      {
+        "policy_id": "POL-010",
+        "doc_id": "lending_policy",
+        "title": "Explainability and fair lending",
+        "version": "2026-07.2",
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
+      },
       {
         "policy_id": "DQ-006",
         "doc_id": "data_quality_policy",
@@ -4252,7 +4519,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "no_income",
@@ -4439,17 +4706,18 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.2,
-      "categorize_ms": 0.97,
-      "affordability_ms": 0.28,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.27,
+      "categorize_ms": 1533.34,
+      "affordability_ms": 1.92,
+      "retrieve_ms": 2.31,
+      "decide_ms": 0.1,
+      "rationale_ms": 1528.07
     }
   },
   {
     "applicant_id": "APP-019",
-    "outcome": "approve",
-    "confidence": 0.9,
+    "outcome": "refer",
+    "confidence": 0.5,
     "requested_amount": 6000.0,
     "term_months": 36,
     "monthly_repayment": 238.24,
@@ -4457,25 +4725,40 @@
     "disposable_after_repayment": 1150.83,
     "dti_including_new": 0.072,
     "reasons": [
-      "Affordable: disposable income \u00a31,389/month, buffer after repayment \u00a31,151 (\u2265 \u00a3150), DTI including the new loan 7%."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 143 of 143 categorisations failed structured-output validation and used the rule fallback."
     ],
-    "rationale": "Affordable: disposable income \u00a31,389/month, buffer after repayment \u00a31,151 (\u2265 \u00a3150), DTI including the new loan 7%. Policy basis: [POL-002] [DQ-003].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 143 of 143 categorisations failed structured-output validation and used the rule fallback. Policy basis: [POL-010] [DQ-003].",
     "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "143 of 143 categorisations failed structured-output validation and used the rule fallback."
+      },
       {
         "code": "refunds_netted",
         "severity": "info",
         "message": "1 refund(s) netted against original spend."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": null,
+    "guardrail": "llm_unavailable",
     "policy_citations": [
       {
-        "policy_id": "POL-002",
+        "policy_id": "POL-010",
         "doc_id": "lending_policy",
-        "title": "Minimum disposable-income buffer",
+        "title": "Explainability and fair lending",
         "version": "2026-07.2",
-        "quote": "After deducting the proposed new monthly repayment, the customer must retain a minimum monthly **disposable-income buffer of \u00a3150**. Disposable income means assessed monthly income less essential expenditure, existing debt repayments and unclassified spend. If the buffer would fall below \u00a3150 the application must not be approved at the requested amount: reduce the amount to the",
-        "score": 0.3463
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
       },
       {
         "policy_id": "DQ-003",
@@ -4487,12 +4770,12 @@
       }
     ],
     "human_review_required": true,
-    "review_priority": "standard",
+    "review_priority": "high",
     "versions": {
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "injection_descriptions",
@@ -4690,11 +4973,12 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.2,
-      "categorize_ms": 0.96,
-      "affordability_ms": 0.33,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 2.15,
+      "categorize_ms": 1534.17,
+      "affordability_ms": 1.39,
+      "retrieve_ms": 1.81,
+      "decide_ms": 0.07,
+      "rationale_ms": 1526.89
     }
   },
   {
@@ -4708,18 +4992,41 @@
     "disposable_after_repayment": 959.63,
     "dti_including_new": 0.09,
     "reasons": [
-      "Automated affordability assessment is not reliable for this application; referred for manual review: Observation window is non-contiguous (missing month)."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 117 of 117 categorisations failed structured-output validation and used the rule fallback.; Observation window is non-contiguous (missing month)."
     ],
-    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: Observation window is non-contiguous (missing month). Policy basis: [DQ-006].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 117 of 117 categorisations failed structured-output validation and used the rule fallback.; Observation window is non-contiguous (missing month). Policy basis: [POL-010] [DQ-006].",
     "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "117 of 117 categorisations failed structured-output validation and used the rule fallback."
+      },
       {
         "code": "coverage_gap",
         "severity": "guardrail",
         "message": "Observation window is non-contiguous (missing month)."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": "coverage_gap",
+    "guardrail": "llm_unavailable",
     "policy_citations": [
+      {
+        "policy_id": "POL-010",
+        "doc_id": "lending_policy",
+        "title": "Explainability and fair lending",
+        "version": "2026-07.2",
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
+      },
       {
         "policy_id": "DQ-006",
         "doc_id": "data_quality_policy",
@@ -4735,7 +5042,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "missing_month",
@@ -4904,11 +5211,12 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.16,
-      "categorize_ms": 0.8,
-      "affordability_ms": 0.25,
-      "retrieve_ms": 0.18,
-      "decide_ms": 0.01
+      "validate_input_ms": 0.81,
+      "categorize_ms": 1535.45,
+      "affordability_ms": 0.86,
+      "retrieve_ms": 1.11,
+      "decide_ms": 0.05,
+      "rationale_ms": 1524.12
     }
   },
   {
@@ -4922,18 +5230,41 @@
     "disposable_after_repayment": 697.96,
     "dti_including_new": 0.07,
     "reasons": [
-      "Automated affordability assessment is not reliable for this application; referred for manual review: Unclassified transactions are 20% of debit value (limit 10%)."
+      "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 162 of 162 categorisations failed structured-output validation and used the rule fallback.; Unclassified transactions are 20% of debit value (limit 10%)."
     ],
-    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: Unclassified transactions are 20% of debit value (limit 10%). Policy basis: [DQ-001].",
+    "rationale": "Automated affordability assessment is not reliable for this application; referred for manual review: LLM provider unavailable; categorisation fell back to rules.; 162 of 162 categorisations failed structured-output validation and used the rule fallback.; Unclassified transactions are 20% of debit value (limit 10%). Policy basis: [POL-010] [DQ-001].",
     "warnings": [
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable; categorisation fell back to rules."
+      },
+      {
+        "code": "llm_output_invalid",
+        "severity": "guardrail",
+        "message": "162 of 162 categorisations failed structured-output validation and used the rule fallback."
+      },
       {
         "code": "high_unknown_share",
         "severity": "guardrail",
         "message": "Unclassified transactions are 20% of debit value (limit 10%)."
+      },
+      {
+        "code": "llm_unavailable",
+        "severity": "guardrail",
+        "message": "LLM provider unavailable for rationale; deterministic template used."
       }
     ],
-    "guardrail": "high_unknown_share",
+    "guardrail": "llm_unavailable",
     "policy_citations": [
+      {
+        "policy_id": "POL-010",
+        "doc_id": "lending_policy",
+        "title": "Explainability and fair lending",
+        "version": "2026-07.2",
+        "quote": "Every recommendation must be **explainable** with the specific cashflow evidence (transaction-level) and the policy basis used, must be reviewable by a human before any decision takes effect, and must **not** rely on protected characteristics. The reasoning shown to reviewers and auditors must match the evidence in the account data exactly.",
+        "score": null
+      },
       {
         "policy_id": "DQ-001",
         "doc_id": "data_quality_policy",
@@ -4949,7 +5280,7 @@
       "engine": "2.0.0",
       "policy_corpus": "2026-07.2",
       "prompts": "v3",
-      "llm": "deterministic",
+      "llm": "ollama/llama3.2",
       "embeddings": "tfidf"
     },
     "profile": "high_unknown",
@@ -5163,11 +5494,12 @@
       "POL-009"
     ],
     "timings_ms": {
-      "validate_input_ms": 0.23,
-      "categorize_ms": 1.12,
-      "affordability_ms": 0.33,
-      "retrieve_ms": 0.19,
-      "decide_ms": 0.01
+      "validate_input_ms": 1.33,
+      "categorize_ms": 1529.15,
+      "affordability_ms": 1.72,
+      "retrieve_ms": 1.85,
+      "decide_ms": 0.08,
+      "rationale_ms": 1525.59
     }
   }
 ]

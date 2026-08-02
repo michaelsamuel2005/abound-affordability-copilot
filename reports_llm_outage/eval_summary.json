@@ -9,41 +9,41 @@
     "n_transactions": 4567
   },
   "decision": {
-    "accuracy": 1.0,
-    "correct": 32,
+    "accuracy": 0.469,
+    "correct": 15,
     "n": 32,
     "confusion": {
-      "approve->approve": 11,
+      "approve->refer": 11,
       "refer->refer": 15,
-      "decline->decline": 6
+      "decline->refer": 6
     },
     "per_class": {
       "approve": {
         "support": 11,
-        "recall": 1.0,
-        "precision": 1.0
+        "recall": 0.0,
+        "precision": null
       },
       "refer": {
         "support": 15,
         "recall": 1.0,
-        "precision": 1.0
+        "precision": 0.469
       },
       "decline": {
         "support": 6,
-        "recall": 1.0,
-        "precision": 1.0
+        "recall": 0.0,
+        "precision": null
       }
     },
-    "false_positive_referral_rate": 0.0
+    "false_positive_referral_rate": 1.0
   },
   "guardrails": {
-    "recall": 1.0,
-    "true_positives": 17,
+    "recall": 0.471,
+    "true_positives": 8,
     "expected_positives": 17,
     "per_code": {
       "buffer_breach_reduced_offer": {
         "expected": 2,
-        "raised": 2
+        "raised": 0
       },
       "coverage_gap": {
         "expected": 1,
@@ -51,15 +51,15 @@
       },
       "distress_events": {
         "expected": 1,
-        "raised": 1
+        "raised": 0
       },
       "dti_borderline": {
         "expected": 1,
-        "raised": 1
+        "raised": 0
       },
       "gambling_high": {
         "expected": 2,
-        "raised": 2
+        "raised": 0
       },
       "high_cash_usage": {
         "expected": 1,
@@ -71,7 +71,7 @@
       },
       "income_volatility_high": {
         "expected": 2,
-        "raised": 2
+        "raised": 0
       },
       "insufficient_history": {
         "expected": 2,
@@ -87,7 +87,7 @@
       },
       "vulnerability_indicators": {
         "expected": 1,
-        "raised": 1
+        "raised": 0
       }
     },
     "treatment_checks": {
@@ -102,22 +102,27 @@
     "expected_ids_total": 37,
     "case_all_found_rate": 1.0,
     "top1_relevant_rate": 0.531,
-    "runtime_decisive_hit_rate": 1.0,
-    "runtime_decisive_hits": 40,
-    "runtime_decisive_total": 40,
-    "runtime_case_all_found_rate": 1.0,
+    "runtime_decisive_hit_rate": 0.273,
+    "runtime_decisive_hits": 12,
+    "runtime_decisive_total": 44,
+    "runtime_case_all_found_rate": 0.0,
     "embedder": "tfidf"
   },
   "faithfulness": {
-    "rate": 1.0,
-    "passed": 32,
+    "rate": 0.969,
+    "passed": 31,
     "n": 32,
     "checker": "deterministic (verbatim quotes + cited-id subset + number grounding + citation presence)",
-    "llm_rationale_used": null,
-    "llm_rationale_rejected": null,
-    "llm_rationale_unavailable": null,
-    "llm_rationale_used_rate": null,
-    "violations": [],
+    "llm_rationale_rejected": 0,
+    "llm_rationale_accepted_rate": 1.0,
+    "violations": [
+      {
+        "applicant_id": "EVAL-010",
+        "problems": [
+          "contains a number not present in the computed facts: 144"
+        ]
+      }
+    ],
     "llm_judge": null
   },
   "categorization": {
@@ -238,57 +243,62 @@
     "critical_examples": []
   },
   "structured_output": {
-    "mode": "rules",
-    "batches": 0,
-    "llm_calls": 0,
+    "mode": "llm",
+    "batches": 32,
+    "llm_calls": 32,
     "parse_failures": 0,
     "repairs": 0,
     "repaired_items": 0,
-    "fallback_items": 0,
+    "fallback_items": 4567,
     "invented_ids": 0,
-    "llm_unavailable": 0,
-    "batch_first_pass_valid_rate": null,
-    "item_fallback_rate": 0.0
+    "llm_unavailable": 32,
+    "batch_first_pass_valid_rate": 1.0,
+    "item_fallback_rate": 1.0
   },
   "latency_ms": {
     "affordability_ms": {
-      "mean": 0.33,
-      "p50": 0.32,
-      "p95": 0.41
+      "mean": 1.38,
+      "p50": 1.35,
+      "p95": 2.19
     },
     "categorize_ms": {
-      "mean": 0.97,
-      "p50": 1.01,
-      "p95": 1.15
+      "mean": 1530.12,
+      "p50": 1531.17,
+      "p95": 1536.5
     },
     "decide_ms": {
-      "mean": 0.01,
-      "p50": 0.01,
-      "p95": 0.01
+      "mean": 0.07,
+      "p50": 0.07,
+      "p95": 0.09
     },
     "end_to_end": {
-      "mean": 1.74,
-      "p50": 1.74,
-      "p95": 2.29
+      "mean": 3062.47,
+      "p50": 3061.38,
+      "p95": 3070.85
+    },
+    "rationale_ms": {
+      "mean": 1524.55,
+      "p50": 1524.8,
+      "p95": 1528.57
     },
     "retrieve_ms": {
-      "mean": 0.23,
-      "p50": 0.2,
-      "p95": 0.36
+      "mean": 2.14,
+      "p50": 1.82,
+      "p95": 4.15
     },
     "validate_input_ms": {
-      "mean": 0.2,
-      "p50": 0.21,
-      "p95": 0.24
+      "mean": 4.23,
+      "p50": 1.46,
+      "p95": 2.47
     }
   },
   "calibration": {
-    "mean_confidence_correct": 0.755,
-    "mean_confidence_incorrect": null
+    "mean_confidence_correct": 0.5,
+    "mean_confidence_incorrect": 0.5
   },
   "versions": {
     "prompt": "v3",
-    "llm": "deterministic",
+    "llm": "ollama/llama3.2",
     "embedder": "tfidf"
   }
 }

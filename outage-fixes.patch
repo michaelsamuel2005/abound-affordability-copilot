@@ -1,0 +1,160 @@
+--- a/src/agent.py
++++ b/src/agent.py
+@@ -173,6 +173,22 @@
+     return f"{' '.join(reasons)} Policy basis: {cite}."
+ 
+ 
++def categorize_facts(meta: dict | None) -> dict:
++    """Numeric categorisation diagnostics, namespaced so they cannot collide with
++    metric names. Pipeline guardrail messages quote these counters verbatim
++    ("144 of 143 categorisations failed structured-output validation"), and those
++    messages are spliced into the template rationale — so they must be part of the
++    grounded fact set or the template fails the system's own check. Found by the
++    provider-outage run of 2026-08-02."""
++    if not meta:
++        return {}
++    return {
++        f"categorize_{k}": v
++        for k, v in meta.items()
++        if isinstance(v, int | float) and not isinstance(v, bool)
++    }
++
++
+ def build_facts(
+     m,
+     requested: float,
+@@ -181,6 +197,7 @@
+     disposable_after: float,
+     dti_new: float,
+     max_afford: float,
++    categorize_meta: dict | None = None,
+ ) -> dict:
+     """The ONLY numbers the rationale (LLM or template) may use — also the
+     reference set the faithfulness checker validates against.
+@@ -210,6 +227,7 @@
+             "max_affordable_amount": max_afford,
+         }
+     )
++    facts.update(categorize_facts(categorize_meta))
+     return facts
+ 
+ 
+@@ -319,7 +337,16 @@
+     retrieval_hits = [pid in retrieved_ids for pid in rr.decisive_policy_ids]
+ 
+     warnings = list(rr.warnings)
+-    facts = build_facts(m, requested, term, repayment, disposable_after, dti_new, max_afford)
++    facts = build_facts(
++        m,
++        requested,
++        term,
++        repayment,
++        disposable_after,
++        dti_new,
++        max_afford,
++        categorize_meta=cat_meta,
++    )
+ 
+     rationale = _template_rationale(rr.reasons, rr.decisive_policy_ids)
+     rationale_source = "template"
+--- a/src/evaluate.py
++++ b/src/evaluate.py
+@@ -64,6 +64,7 @@
+         decision.disposable_after_repayment,
+         decision.dti_including_new,
+         decision.max_affordable_amount,
++        categorize_meta=diag.get("categorize_meta"),
+     )
+     # 1. at least one citation
+     if not decision.policy_citations:
+@@ -116,7 +117,7 @@
+     fp_referrals = approve_expected = 0
+     ret_hit = ret_total = case_hits = top1_hits = 0
+     rt_hit = rt_total = rt_case_hits = 0  # runtime-decisive coverage
+-    faithful_n = judge_yes = judge_n = rationale_rejected_n = 0
++    faithful_n = judge_yes = judge_n = rationale_rejected_n = rationale_llm_n = 0
+     cat_correct = cat_total = 0
+     cat_conf: Counter = Counter()
+     per_cat: dict[str, Counter] = defaultdict(Counter)
+@@ -171,10 +172,15 @@
+         # faithfulness
+         faith, probs = _check_faithfulness(decision, diag, retriever, cfg)
+         faithful_n += int(faith)
+-        # In LLM mode a rejected rationale is silently replaced by the deterministic
+-        # template, which passes the grounding check by construction. Reporting the
+-        # pass rate alone would therefore flatter the model: the 2026-08-01 run had
+-        # 28 of 53 rationales rejected. Track acceptance so the two are read together.
++        # In LLM mode a rejected OR unattempted rationale is replaced by the
++        # deterministic template, which passes the grounding check by construction.
++        # Reporting the pass rate alone flatters the model: the 2026-08-01 run had 28
++        # of 53 rationales rejected, and the 2026-08-02 provider-outage run had zero
++        # model rationales at all yet still scored 0.969. Count what was actually
++        # USED (diag.rationale_source), not merely what was not rejected — inferring
++        # acceptance from the absence of a rationale_rejected warning reported 32/32
++        # accepted during a total provider outage.
++        rationale_llm_n += int(diag.get("rationale_source") == "llm")
+         rationale_rejected_n += int("rationale_rejected" in raised)
+         if not faith:
+             faith_viol.append({"applicant_id": aid, "problems": probs[:3]})
+@@ -333,11 +339,18 @@
+             "n": n,
+             "checker": "deterministic (verbatim quotes + cited-id subset + "
+             "number grounding + citation presence)",
+-            # Read WITH the pass rate: a rejected LLM rationale falls back to the
+-            # deterministic template, which passes by construction.
++            # Read WITH the pass rate: a rationale the model did not supply, or that
++            # failed validation, falls back to the deterministic template, which
++            # passes by construction. `used` counts model-written rationales that
++            # were actually served; the remainder splits into rejected (validation
++            # failed) and unavailable/not-attempted.
++            "llm_rationale_used": rationale_llm_n if llm is not None else None,
+             "llm_rationale_rejected": rationale_rejected_n if llm is not None else None,
+-            "llm_rationale_accepted_rate": (
+-                round((n - rationale_rejected_n) / n, 3) if llm is not None and n else None
++            "llm_rationale_unavailable": (
++                n - rationale_llm_n - rationale_rejected_n if llm is not None else None
++            ),
++            "llm_rationale_used_rate": (
++                round(rationale_llm_n / n, 3) if llm is not None and n else None
+             ),
+             "violations": faith_viol[:10],
+             "llm_judge": (
+--- a/tests/test_agent.py
++++ b/tests/test_agent.py
+@@ -129,6 +129,36 @@
+     assert ok, problems
+ 
+ 
++def test_provider_outage_rationale_is_grounded(retriever):
++    """Regression (provider-outage run 2026-08-02): when every categorisation batch
++    fails, the llm_output_invalid guardrail message quotes the fallback counter
++    ("144 of 143 categorisations failed ..."), which is a categorisation diagnostic
++    rather than an affordability metric. The template rationale therefore failed the
++    system's own grounding check. Categorisation counters are now grounded facts."""
++    from fakes import FakeLLM as _FakeLLM  # noqa: PLC0415
++
++    txns, _ = _forty_txn_payload()
++    applicant = {"applicant_id": "OUT-001", "requested_amount": 4000.0, "term_months": 24}
++    dead = _FakeLLM([ConnectionError("provider down")] * 12)
++    d, diag = assess(applicant, txns, retriever, llm=dead)
++
++    assert d.outcome == Outcome.refer
++    assert diag["rationale_source"] == "template"
++    facts = __import__("agent").build_facts(
++        __import__("schemas").AffordabilityMetrics(**diag["metrics"]),
++        d.requested_amount,
++        d.term_months,
++        d.monthly_repayment,
++        d.disposable_after_repayment,
++        d.dti_including_new,
++        d.max_affordable_amount,
++        categorize_meta=diag["categorize_meta"],
++    )
++    allowed = set(diag["retrieved_ids"]) | set(diag["decisive_ids"])
++    ok, problems = validate_rationale(d.rationale, facts, allowed, thresholds())
++    assert ok, problems
++
++
+ def test_negative_fact_quoted_with_its_sign_is_grounded():
+     """Regression (live-LLM run 2026-08-01): an over-indebted applicant's template
+     rationale quotes a NEGATIVE post-repayment buffer as "£-458". The number

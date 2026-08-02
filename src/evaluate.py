@@ -64,6 +64,7 @@ def _check_faithfulness(decision, diag, retriever, cfg) -> tuple[bool, list[str]
         decision.disposable_after_repayment,
         decision.dti_including_new,
         decision.max_affordable_amount,
+        categorize_meta=diag.get("categorize_meta"),
     )
     # 1. at least one citation
     if not decision.policy_citations:
@@ -116,7 +117,7 @@ def evaluate(
     fp_referrals = approve_expected = 0
     ret_hit = ret_total = case_hits = top1_hits = 0
     rt_hit = rt_total = rt_case_hits = 0  # runtime-decisive coverage
-    faithful_n = judge_yes = judge_n = rationale_rejected_n = 0
+    faithful_n = judge_yes = judge_n = rationale_rejected_n = rationale_llm_n = 0
     cat_correct = cat_total = 0
     cat_conf: Counter = Counter()
     per_cat: dict[str, Counter] = defaultdict(Counter)
@@ -171,10 +172,15 @@ def evaluate(
         # faithfulness
         faith, probs = _check_faithfulness(decision, diag, retriever, cfg)
         faithful_n += int(faith)
-        # In LLM mode a rejected rationale is silently replaced by the deterministic
-        # template, which passes the grounding check by construction. Reporting the
-        # pass rate alone would therefore flatter the model: the 2026-08-01 run had
-        # 28 of 53 rationales rejected. Track acceptance so the two are read together.
+        # In LLM mode a rejected OR unattempted rationale is replaced by the
+        # deterministic template, which passes the grounding check by construction.
+        # Reporting the pass rate alone flatters the model: the 2026-08-01 run had 28
+        # of 53 rationales rejected, and the 2026-08-02 provider-outage run had zero
+        # model rationales at all yet still scored 0.969. Count what was actually
+        # USED (diag.rationale_source), not merely what was not rejected — inferring
+        # acceptance from the absence of a rationale_rejected warning reported 32/32
+        # accepted during a total provider outage.
+        rationale_llm_n += int(diag.get("rationale_source") == "llm")
         rationale_rejected_n += int("rationale_rejected" in raised)
         if not faith:
             faith_viol.append({"applicant_id": aid, "problems": probs[:3]})
@@ -333,11 +339,18 @@ def evaluate(
             "n": n,
             "checker": "deterministic (verbatim quotes + cited-id subset + "
             "number grounding + citation presence)",
-            # Read WITH the pass rate: a rejected LLM rationale falls back to the
-            # deterministic template, which passes by construction.
+            # Read WITH the pass rate: a rationale the model did not supply, or that
+            # failed validation, falls back to the deterministic template, which
+            # passes by construction. `used` counts model-written rationales that
+            # were actually served; the remainder splits into rejected (validation
+            # failed) and unavailable/not-attempted.
+            "llm_rationale_used": rationale_llm_n if llm is not None else None,
             "llm_rationale_rejected": rationale_rejected_n if llm is not None else None,
-            "llm_rationale_accepted_rate": (
-                round((n - rationale_rejected_n) / n, 3) if llm is not None and n else None
+            "llm_rationale_unavailable": (
+                n - rationale_llm_n - rationale_rejected_n if llm is not None else None
+            ),
+            "llm_rationale_used_rate": (
+                round(rationale_llm_n / n, 3) if llm is not None and n else None
             ),
             "violations": faith_viol[:10],
             "llm_judge": (
