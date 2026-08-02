@@ -1,0 +1,4 @@
+=== pytest exit code: 0 ===
+TOTAL                    1458     75  94.9%
+Coverage XML written to file reports/coverage.xml
+140 passed, 2 skipped, 1 warning in 42.60s

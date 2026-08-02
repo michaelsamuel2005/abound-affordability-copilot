@@ -1,0 +1,38 @@
+=== collected ===
+2026-08-02T11:00:33Z (UTC)
+2026-08-02T12:00:33+0100 (local)
+
+=== host hardware (the machine that produced the 307 s live-LLM p95) ===
+    Hardware Overview:
+
+cpu.brand_string : Apple M1
+physical cores   : 8
+logical cores    : 8
+memory (bytes)   : 8589934592
+page size        : 16384
+
+=== os / runtime ===
+ProductName:		macOS
+ProductVersion:		26.1
+BuildVersion:		25B78
+uname            : Darwin Michaels-Macbook-Air.local 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:47 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8103 arm64
+python           : Python 3.12.13
+python path      : /opt/anaconda3/envs/abound/bin/python
+conda env        : abound
+ruff             : ruff 0.16.1
+pytest           : pytest 9.1.1
+
+=== model serving (live-LLM configuration) ===
+ollama version   : ollama version is 0.32.5
+-- ollama list --
+NAME                           ID              SIZE      MODIFIED     
+llama3.2:3b-instruct-q4_K_M    a80c4f17acd5    2.0 GB    20 hours ago    
+
+NOTE ON THE 307 s FIGURE: end-to-end p95 for ONE applicant
+(~145 transactions) with LLM_BATCH_SIZE=10 and LLM_TIMEOUT_S=180, model
+served locally by Ollama on the CPU/GPU of the machine described above.
+It is in-process pipeline latency, NOT HTTP API latency, and it is
+dominated by the model: categorise p50 247 s, rationale p50 12.9 s, every
+deterministic stage under 35 ms. The same machine idle vs in-use moved p95
+from 470 s (2026-08-01, machine in use) to 307 s (2026-08-02, overnight),
+so treat these as order-of-magnitude, not benchmark-grade, numbers.

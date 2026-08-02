@@ -1,0 +1,138 @@
+=== evidence directories ===
+
+--- reports ---
+       54771  coverage.xml
+      147899  decisions.json
+        2276  docker_build_sandbox.log
+        4771  eval_rows.csv
+        5922  eval_summary.json
+         320  evidence
+        1914  pytest_coverage.txt
+       25854  report.html
+         905  run_manifest.json
+  config      : {'prompt': 'v3', 'llm': 'deterministic', 'embedder': 'tfidf'}
+  decision    : 1.0 (32/32) {'approve->approve': 11, 'refer->refer': 15, 'decline->decline': 6}
+  guardrails  : 1.0 (17/17)
+  retrieval   : runtime 1.0 (40/40) | labelled 1.0 | top1 0.531
+  grounding   : 1.0 | model rationales served: None rejected: None
+  categorise  : 0.959 | income-inflation 0 | debt-deflation 0
+  e2e p95 ms  : 2.02
+
+--- reports_minilm ---
+       54307  coverage.xml
+      147943  decisions.json
+        2276  docker_build_sandbox.log
+        4811  eval_rows.csv
+        5936  eval_summary.json
+        1358  pytest_coverage.txt
+       25934  report.html
+         907  run_manifest.json
+  config      : {'prompt': 'v3', 'llm': 'deterministic', 'embedder': 'minilm'}
+  decision    : 1.0 (32/32) {'approve->approve': 11, 'refer->refer': 15, 'decline->decline': 6}
+  guardrails  : 1.0 (17/17)
+  retrieval   : runtime 0.95 (38/40) | labelled 0.946 | top1 0.438
+  grounding   : 1.0 | model rationales served: None rejected: None
+  categorise  : 0.959 | income-inflation 0 | debt-deflation 0
+  e2e p95 ms  : 14.55
+
+--- reports_llm_v3 ---
+       54307  coverage.xml
+      167020  decisions.json
+        2276  docker_build_sandbox.log
+        6001  eval_rows.csv
+        7557  eval_summary.json
+        1358  pytest_coverage.txt
+       31024  report.html
+         930  run_manifest.json
+       73872  run.log
+  config      : {'prompt': 'v3', 'llm': 'ollama/llama3.2:3b-instruct-q4_K_M', 'embedder': 'tfidf'}
+  decision    : 0.969 (31/32) {'approve->approve': 11, 'refer->approve': 1, 'refer->refer': 14, 'decline->decline': 6}
+  guardrails  : 0.824 (14/17)
+  retrieval   : runtime 0.961 (49/51) | labelled 0.946 | top1 0.281
+  grounding   : 1.0 | model rationales served: 8 rejected: 24
+  categorise  : 0.604 | income-inflation 3 | debt-deflation 33
+  e2e p95 ms  : 307147.12
+
+--- reports_llm_outage ---
+       54307  coverage.xml
+      167238  decisions.json
+        2276  docker_build_sandbox.log
+        6229  eval_rows.csv
+        6130  eval_summary.json
+        1358  pytest_coverage.txt
+       31625  report.html
+         909  run_manifest.json
+       61910  run.log
+  config      : {'prompt': 'v3', 'llm': 'ollama/llama3.2', 'embedder': 'tfidf'}
+  decision    : 0.469 (15/32) {'approve->refer': 11, 'refer->refer': 15, 'decline->refer': 6}
+  guardrails  : 0.471 (8/17)
+  retrieval   : runtime 0.273 (12/44) | labelled 1.0 | top1 0.531
+  grounding   : 0.969 | model rationales served: None rejected: 0
+  categorise  : 0.959 | income-inflation 0 | debt-deflation 0
+  e2e p95 ms  : 3070.85
+
+--- reports_llm_llama32_3b ---
+       54307  coverage.xml
+      169934  decisions.json
+        2276  docker_build_sandbox.log
+        6143  eval_rows.csv
+        7687  eval_summary.json
+        1358  pytest_coverage.txt
+       33885  report.html
+         930  run_manifest.json
+       71215  run.log
+  config      : {'prompt': 'v3', 'llm': 'ollama/llama3.2:3b-instruct-q4_K_M', 'embedder': 'tfidf'}
+  decision    : 0.75 (24/32) {'approve->approve': 4, 'approve->refer': 7, 'refer->approve': 1, 'refer->refer': 14, 'decline->decline': 6}
+  guardrails  : 0.824 (14/17)
+  retrieval   : runtime 0.961 (49/51) | labelled 0.946 | top1 0.281
+  grounding   : 0.844 | model rationales served: None rejected: None
+  categorise  : 0.604 | income-inflation 3 | debt-deflation None
+  e2e p95 ms  : 470037.51
+
+=== sha256 of every retained artefact ===
+407d737e96e32ad0d0fa2e02a9396900dd1216a2851aa671cadc14910b3f4bc4  reports_llm_llama32_3b/coverage.xml
+7101094dcbd91feb9deb142dada028c3a35756422f4aa26b602db53f326a3c97  reports_llm_llama32_3b/decisions.json
+b7fdaf09b00a8c387a0db3bfb27dfed9fa9213b6c7f826ff3b7ceb0adaab7b2c  reports_llm_llama32_3b/docker_build_sandbox.log
+3173db73d85a28cba13244689348010d15078d703906068750a438fc8b3b2a87  reports_llm_llama32_3b/eval_rows.csv
+2b61d4ac351c0f3039185aede2291f92b1811608a019f0b7285c3167fbfe95e9  reports_llm_llama32_3b/eval_summary.json
+d2bffcbdd5de0f22a75c90a6b2b21adc9b40fd983eaca733712fa943b486bea1  reports_llm_llama32_3b/pytest_coverage.txt
+2c03f21b4f8fe63be186d30f9531c8bec7eb11580a8854ab76c41231ceeaa361  reports_llm_llama32_3b/run_manifest.json
+86db490d16bde2795029d03e717403806fc565aa756924a5192a13b8933f01d7  reports_llm_llama32_3b/run.log
+407d737e96e32ad0d0fa2e02a9396900dd1216a2851aa671cadc14910b3f4bc4  reports_llm_outage/coverage.xml
+2fb68cc5675a9effec4089674c1807f8017f79b01f1ac56951339fa388161a5f  reports_llm_outage/decisions.json
+b7fdaf09b00a8c387a0db3bfb27dfed9fa9213b6c7f826ff3b7ceb0adaab7b2c  reports_llm_outage/docker_build_sandbox.log
+ab60222a861d44b18a065ba92e58cc7d2a83edc19b96b88e37b3c4a37c90106e  reports_llm_outage/eval_rows.csv
+fa917a9bf41ead85bdf9b491674777d8808663e524001e96293b15531c7b48c9  reports_llm_outage/eval_summary.json
+d2bffcbdd5de0f22a75c90a6b2b21adc9b40fd983eaca733712fa943b486bea1  reports_llm_outage/pytest_coverage.txt
+c361f5f445ef5fbce52c68ddb15de382bf66766d74965d79f62f9f5fb965c982  reports_llm_outage/run_manifest.json
+bcf89392b2b6e7c18e9c78afca1026b3e4508e3cabc11cb1bd124e49ca7a7877  reports_llm_outage/run.log
+407d737e96e32ad0d0fa2e02a9396900dd1216a2851aa671cadc14910b3f4bc4  reports_llm_v3/coverage.xml
+52af7e07d0491a02defcd56e8c23465721e8351eb6018fbaf87389218ffc72cd  reports_llm_v3/decisions.json
+b7fdaf09b00a8c387a0db3bfb27dfed9fa9213b6c7f826ff3b7ceb0adaab7b2c  reports_llm_v3/docker_build_sandbox.log
+dbca7233e3ff3bd3e2be2c730442595ab1342d53af39148b7fbdc13a86130e01  reports_llm_v3/eval_rows.csv
+bcb76cd16d6d3db5a59b26f8e1ad82d99c656d2bab7fb9ac328bf35f7ab0c54c  reports_llm_v3/eval_summary.json
+d2bffcbdd5de0f22a75c90a6b2b21adc9b40fd983eaca733712fa943b486bea1  reports_llm_v3/pytest_coverage.txt
+b9f149eb7328fec167bfa418a092d985175501550a695080457871c731758398  reports_llm_v3/run_manifest.json
+c1ced38315b9f19f03c7f6c47f1f3301d4f556dbaddfc64144e34e05db5721c5  reports_llm_v3/run.log
+407d737e96e32ad0d0fa2e02a9396900dd1216a2851aa671cadc14910b3f4bc4  reports_minilm/coverage.xml
+6f9ef3fec8bc3b3af5abf803819583c11d6f81a1d0a721a67d9fa69f0d1543d6  reports_minilm/decisions.json
+b7fdaf09b00a8c387a0db3bfb27dfed9fa9213b6c7f826ff3b7ceb0adaab7b2c  reports_minilm/docker_build_sandbox.log
+0cb3c4344522385b63d2ca01c1553d437515ba1b6756132666cf76d37e5ca4c3  reports_minilm/eval_rows.csv
+95be2cbdc246639318cd9a94732e6ee85eb6f06dffc8442ece72e577591f273e  reports_minilm/eval_summary.json
+d2bffcbdd5de0f22a75c90a6b2b21adc9b40fd983eaca733712fa943b486bea1  reports_minilm/pytest_coverage.txt
+6ceb92ae269a6fd9fc571d039dddfea0c6a55ee7b35b176ea70e3112a4bc1180  reports_minilm/run_manifest.json
+335a268a8f3da82900eeae58d26d2bd6ac06bb7b0745208a3e712d1c92cd1571  reports/coverage.xml
+7438fdc38fbdeab5828e4152e91ed57421fbc2bf854122183a933b6d20f6b5bd  reports/decisions.json
+b7fdaf09b00a8c387a0db3bfb27dfed9fa9213b6c7f826ff3b7ceb0adaab7b2c  reports/docker_build_sandbox.log
+d89bf4f52e4aca385b08d5cc71af8a288cfe5663f2ad4bbd329956d9e98186e2  reports/eval_rows.csv
+efc94b648d438b82bf287ff137fbbe5484c690b5ad9d7a31bacb2d383680ca5b  reports/eval_summary.json
+9a8e1584d6c6df75f598a2ff2a9f6c937537c78cee335c00b0a751029a6a4618  reports/evidence/docker_evidence.txt
+fa6b3e5841d088947561eadddd8d20cb3975d190c5a83cc6eb9280e8d36fd91a  reports/evidence/environment.txt
+539bc6a8b19b6af710b8104a6130e5cd6d1bf5d315a9924b59bd521a74b1196f  reports/evidence/evidence_manifest.txt
+7d5a6a1c952c42e6d70dfffdf2ab63e1b0aa5a5dc061b5b1129ecccf26459b31  reports/evidence/git_and_ci.txt
+58251db8fbc0f3d7ff7b2178b1356c196d7002b054bd86582e2b4d98f368d617  reports/evidence/lint.txt
+8176d8d46f10e7505c8a3b0a1528919c1a66c854b9f98660db49d401e8115287  reports/evidence/pytest_coverage.txt
+8e162a42b71943c87f5b1348d3af4bc91b52014b23ec16f0b51307aa39f83ee8  reports/evidence/pytest_hostile_env.txt
+535ab80e7fa2d57d23a6c92d06727c36eeced1144c20595620ab13023eb0ec39  reports/evidence/pytest_summary.txt
+8176d8d46f10e7505c8a3b0a1528919c1a66c854b9f98660db49d401e8115287  reports/pytest_coverage.txt
+2e446d3efab5cd59f2e18cd1337badb55cc626986b21411ae6a852963f4941d9  reports/run_manifest.json

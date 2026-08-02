@@ -1,0 +1,32 @@
+=== remote ===
+origin	https://github.com/michaelsamuel2005/abound-affordability-copilot.git (fetch)
+origin	https://github.com/michaelsamuel2005/abound-affordability-copilot.git (push)
+repository URL   : https://github.com/michaelsamuel2005/abound-affordability-copilot
+
+=== HEAD ===
+commit SHA       : 7976d8201037085a1f3e97c76fbd73ff1d8b0550
+short SHA        : 7976d82
+branch           : main
+author           : Michael Samuel <ce25478@bristol.ac.uk>
+committed (UTC)   : 2026-08-02T12:00:07+01:00
+subject          : Docs: four measured configurations; add evidence collector
+
+=== working tree (must be clean for the SHA to mean anything) ===
+   M reports/coverage.xml
+   M reports/pytest_coverage.txt
+  ?? reports/evidence/
+
+=== last 12 commits ===
+7976d82 Docs: four measured configurations; add evidence collector
+236e9e0 Ground categorisation counters; fix rationale-acceptance metric under provider outage
+096519c Fix defects found by the live-LLM run; make offline tests hermetic
+e14830f Affordability Copilot: human-in-the-loop RAG for cashflow underwriting
+
+=== GitHub Actions runs ===
+2026-08-02T11:00:27Z  ci  success  sha=7976d8201037085a1f3e97c76fbd73ff1d8b0550  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30744865803
+2026-08-02T01:02:01Z  ci  success  sha=236e9e04bfc94a5772af50cb4c19bff5181ded83  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30726317239
+2026-08-02T00:48:00Z  ci  success  sha=096519cd47d316fb9084b3f5ecce2a239404a436  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30725872828
+2026-08-01T13:23:45Z  ci  success  sha=e14830fb27f3e76efb9c68fb73927b8969fc21b4  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30701636238
+
+--- run for the current HEAD ---
+id=3.0744865803e+10 status=completed conclusion=success https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30744865803
