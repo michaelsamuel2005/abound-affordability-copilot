@@ -1,8 +1,25 @@
-........................................................................ [ 50%]
-.............................ss.......................................   [100%]
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/michaelsebastian/Documents/abound-affordability-copilot
+configfile: pyproject.toml
+testpaths: tests
+plugins: cov-7.1.0, anyio-4.14.2
+collected 142 items
+
+tests/test_affordability.py .................                            [ 11%]
+tests/test_agent.py .......................                              [ 28%]
+tests/test_api.py ....................                                   [ 42%]
+tests/test_categorize.py .............                                   [ 51%]
+tests/test_decision_rules.py .....................                       [ 66%]
+tests/test_evaluate.py .......                                           [ 71%]
+tests/test_minilm_optional.py ss                                         [ 72%]
+tests/test_retriever.py ..................                               [ 85%]
+tests/test_schemas.py .....................                              [100%]
+
 =============================== warnings summary ===============================
 ../../../../opt/anaconda3/envs/abound/lib/python3.12/site-packages/fastapi/testclient.py:1
   /opt/anaconda3/envs/abound/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
     from starlette.testclient import TestClient as TestClient  # noqa
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 140 passed, 2 skipped, 1 warning in 11.43s ==================

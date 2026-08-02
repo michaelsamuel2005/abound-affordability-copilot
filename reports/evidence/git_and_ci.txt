@@ -3,30 +3,44 @@ origin	https://github.com/michaelsamuel2005/abound-affordability-copilot.git (fe
 origin	https://github.com/michaelsamuel2005/abound-affordability-copilot.git (push)
 repository URL   : https://github.com/michaelsamuel2005/abound-affordability-copilot
 
-=== HEAD ===
-commit SHA       : 7976d8201037085a1f3e97c76fbd73ff1d8b0550
-short SHA        : 7976d82
+=== HEAD (the tree in this archive) ===
+commit SHA       : f9ad82d103c0566f45ceb2434deba8a08ce468e2
+short SHA        : f9ad82d
 branch           : main
 author           : Michael Samuel <ce25478@bristol.ac.uk>
-committed (UTC)   : 2026-08-02T12:00:07+01:00
-subject          : Docs: four measured configurations; add evidence collector
+committed         : 2026-08-02T12:19:57+01:00
+subject          : Add auditor evidence pack and index
 
-=== working tree (must be clean for the SHA to mean anything) ===
-   M reports/coverage.xml
-   M reports/pytest_coverage.txt
-  ?? reports/evidence/
+=== working tree at collection time ===
+   M reports/evidence/git_and_ci.txt
+   M reports/evidence/pytest_hostile_env.txt
+  NOTE: reports/evidence/ files are written ABOUT the commit above, so
+  they are necessarily untracked or modified at the instant they are
+  produced. Source, tests, docs and the five report directories are
+  committed at the SHA shown.
 
-=== last 12 commits ===
+=== commit history ===
+f9ad82d Add auditor evidence pack and index
+9c029d3 Add auditor evidence pack
 7976d82 Docs: four measured configurations; add evidence collector
 236e9e0 Ground categorisation counters; fix rationale-acceptance metric under provider outage
 096519c Fix defects found by the live-LLM run; make offline tests hermetic
 e14830f Affordability Copilot: human-in-the-loop RAG for cashflow underwriting
 
-=== GitHub Actions runs ===
+=== GitHub Actions ===
+--- all runs ---
+2026-08-02T11:19:59Z  ci  success  sha=f9ad82d103c0566f45ceb2434deba8a08ce468e2  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30745528133
+2026-08-02T11:10:47Z  ci  success  sha=9c029d34cb9724da1a00e1a1080078373ef1c057  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30745219806
 2026-08-02T11:00:27Z  ci  success  sha=7976d8201037085a1f3e97c76fbd73ff1d8b0550  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30744865803
 2026-08-02T01:02:01Z  ci  success  sha=236e9e04bfc94a5772af50cb4c19bff5181ded83  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30726317239
 2026-08-02T00:48:00Z  ci  success  sha=096519cd47d316fb9084b3f5ecce2a239404a436  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30725872828
 2026-08-01T13:23:45Z  ci  success  sha=e14830fb27f3e76efb9c68fb73927b8969fc21b4  https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30701636238
 
---- run for the current HEAD ---
-id=3.0744865803e+10 status=completed conclusion=success https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30744865803
+--- run for HEAD (f9ad82d) ---
+run id=30745528133  status=completed  conclusion=success
+https://github.com/michaelsamuel2005/abound-affordability-copilot/actions/runs/30745528133
+
+--- jobs in that run ---
+  test (3.12): success
+  test (3.11): success
+  docker: success
